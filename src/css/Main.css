@@ -1,0 +1,113 @@
+.main-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Botão de menu */
+.toggle-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  background-color: #c77dff;
+  color: white;
+  font-size: 24px;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+/* Sidebar retrátil */
+.sidebar {
+  height: 100%;
+  background: linear-gradient(180deg, #e0aaff, #c77dff);
+  color: white;
+  padding: 4rem 20px;
+  transition: transform 0.3s ease-in-out;
+  width: 220px;
+  position: fixed;
+  top: 4rem;
+  left: 0;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar h3 {
+  font-size: 30px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  padding: 10px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  background-color: rgba(240, 248, 255, 0.392);
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px 0;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar li:hover {
+  background-color: #a855f7;
+  color: white;
+}
+
+.sidebar li button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+}
+
+/* Dashboard */
+.dashboard {
+  flex: 1;
+  margin-left: 240px;
+  padding: 60px 40px;
+  transition: margin-left 0.3s ease-in-out;
+  width: 100%;
+}
+
+.dashboard.expand {
+  margin-left: 0;
+}
+
+.dashboard h2 {
+  margin-bottom: 30px;
+  color: #6c2bd9;
+}
+
+.main-header {
+  background-color: #f3e8ff;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.main-header-title {
+  margin: 0;
+  color: #6c2bd9;
+  font-size: 24px;
+  font-weight: bold;
+}

@@ -1,0 +1,133 @@
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.add-button {
+  background-color: #c77dff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-button:hover {
+  background-color: #a855f7;
+}
+
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: white;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
+}
+
+.stock-table th,
+.stock-table td {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.stock-table th {
+  color: #6c2bd9;
+}
+
+.stock-table tr:last-child td {
+  border-bottom: none;
+}
+
+.edit-button {
+  background-color: #6c2bd9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+  background-color: #5b21b6;
+}
+
+.stock-row {
+  position: relative;
+}
+
+.gear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c2bd9;
+  padding: 4px;
+  z-index: 1;
+  transition: transform 0.2s ease;
+}
+
+.gear-btn:hover {
+  transform: translateY(-50%) scale(1.2);
+}
+
+.menu-opcoes {
+  position: absolute;
+  top: 50%;
+  right: 7%;
+  transform: translateY(-50%);
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.menu-opcoes div {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-opcoes div:hover {
+  background-color: #f3e8ff;
+}
+
+.main-header {
+  background-color: #f3e8ff;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.main-header-title {
+  margin: 0;
+  color: #6c2bd9;
+  font-size: 24px;
+  font-weight: bold;
+}

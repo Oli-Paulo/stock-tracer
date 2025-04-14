@@ -1,0 +1,86 @@
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #cdb4db;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.search-bar button {
+  background-color: #c77dff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-bar button:hover {
+  background-color: #a855f7;
+}
+
+.resultados {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.card-localizacao {
+  background-color: #f9f5ff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border-left: 6px solid #c77dff;
+}
+
+.location-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.location-table th,
+.location-table td {
+  padding: 14px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.location-table th {
+  background-color: #f3e8ff;
+  color: #6c2bd9;
+  font-weight: 600;
+}
+
+.location-table tr:last-child td {
+  border-bottom: none;
+}
+
+.main-header {
+  background-color: #f3e8ff;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.main-header-title {
+  margin: 0;
+  color: #6c2bd9;
+  font-size: 24px;
+  font-weight: bold;
+}
