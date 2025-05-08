@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import '../css/Login.css';
 
 function Login() {
@@ -8,15 +9,34 @@ function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username || !password) {
       setError('Usuário e senha são obrigatórios.');
       return;
     }
-
-    setError('');
-    navigate('/main'); // Redireciona para a Main
+  
+    try {
+      const response = await fetch('http://localhost:3001/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.success) {
+        navigate('/main');
+      } else {
+        setError(data.error || 'Login inválido');
+      }
+    } catch (error) {
+      setError('Erro ao conectar com o servidor.');
+      console.error('Erro no login:', error);
+    }
   };
+  
 
   return (
     <div className="login-container">
