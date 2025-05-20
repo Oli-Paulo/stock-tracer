@@ -55,7 +55,7 @@ app.get("/remedios", (req, res) => {
   });
 });
 
-// Buscar um remédio pelo ID (útil para edição)
+// Buscar um remédio pelo ID
 app.get("/remedios/:id", (req, res) => {
   const { id } = req.params;
   db.query("SELECT * FROM Remedio WHERE ID_Remedio = ?", [id], (err, results) => {
@@ -117,6 +117,17 @@ app.delete("/remedios/:id", (req, res) => {
       return res.status(404).json({ error: "Remédio não encontrado" });
     }
     res.json({ success: true });
+  });
+});
+
+// ✅ Buscar todas as localizações
+app.get("/localizacoes", (req, res) => {
+  db.query("SELECT * FROM Localizacao", (err, results) => {
+    if (err) {
+      console.error("Erro ao buscar localizações:", err);
+      return res.status(500).json({ error: "Erro ao buscar localizações" });
+    }
+    res.json(results);
   });
 });
 

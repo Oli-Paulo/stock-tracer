@@ -1,41 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import "../css/Location.css";
-
-const mockData = [
-  {
-    nome: "Paracetamol",
-    caixa: "Caixa 12",
-    setor: "Setor A",
-    ultimaLocalizacao: "Entrada - 09/04/2025 15:30",
-  },
-  {
-    nome: "Ibuprofeno",
-    caixa: "Caixa 5",
-    setor: "Setor C",
-    ultimaLocalizacao: "Estoque Central - 09/04/2025 14:00",
-  },
-  {
-    nome: "Dipirona",
-    caixa: "Caixa 8",
-    setor: "Setor B",
-    ultimaLocalizacao: "Saída - 10/04/2025 09:45",
-  },
-];
+import axios from "axios";
 
 function Location() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [resultados, setResultados] = useState([]);
+  const [localizacoes, setLocalizacoes] = useState([]);
   const navigate = useNavigate();
 
-  const handleSearch = () => {
-    const filtrado = mockData.filter((med) =>
-      med.nome.toLowerCase().includes(search.toLowerCase())
-    );
-    setResultados(filtrado);
-  };
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/localizacoes") // ✅ URL corrigida
+      .then((res) => setLocalizacoes(res.data))
+      .catch((err) => console.error("Erro ao buscar localizações:", err));
+  }, []);
+
+  // 🔍 Filtra os dados em tempo real
+  const resultadosFiltrados = localizacoes.filter((loc) =>
+    loc.Nome.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <>
@@ -53,37 +38,38 @@ function Location() {
         <Sidebar isOpen={sidebarOpen} />
 
         <div className={`dashboard ${sidebarOpen ? "shrink" : "expand"}`}>
-          <h2>Localização de Medicamentos</h2>
+          <h2>Localizações</h2>
 
           <div className="search-bar">
             <input
               type="text"
-              placeholder="Digite o nome do medicamento..."
+              placeholder="Buscar por nome da localização..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <button onClick={handleSearch}>🔍</button>
           </div>
 
           <table className="location-table">
             <thead>
               <tr>
-                <th>Medicamento</th>
-                <th>Caixa</th>
-                <th>Setor</th>
-                <th>Última Localização</th>
+                <th>Nome</th>
+                <th>Descrição</th>
               </tr>
             </thead>
             <tbody>
-              {(resultados.length > 0 ? resultados : mockData).map(
-                (med, index) => (
+              {resultadosFiltrados.length > 0 ? (
+                resultadosFiltrados.map((loc, index) => (
                   <tr key={index}>
-                    <td>{med.nome}</td>
-                    <td>{med.caixa}</td>
-                    <td>{med.setor}</td>
-                    <td>{med.ultimaLocalizacao}</td>
+                    <td>{loc.Nome}</td>
+                    <td>{loc.Descricao}</td>
                   </tr>
-                )
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="2" style={{ textAlign: "center", padding: "1rem" }}>
+                    Nenhuma localização encontrada.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
