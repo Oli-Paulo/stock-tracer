@@ -61,7 +61,11 @@ function CadastrarRemedio() {
       });
 
       if (response.ok) {
-        setMensagemModal(id ? "Remédio atualizado com sucesso!" : "Remédio cadastrado com sucesso!");
+        setMensagemModal(
+          id
+            ? "Remédio atualizado com sucesso!"
+            : "Remédio cadastrado com sucesso!"
+        );
         setErroCadastro(false);
       } else {
         setMensagemModal("Erro ao salvar remédio.");
@@ -101,71 +105,89 @@ function CadastrarRemedio() {
 
         <div className={`dashboard ${sidebarOpen ? "shrink" : "expand"}`}>
           <h2>{id ? "Modificar Remédio" : "Cadastrar Novo Remédio"}</h2>
+          <div className="form-wrapper">
+            <form className="form-cadastro" onSubmit={handleSubmit}>
+              <div className="form-group full-width">
+                <label>Nome</label>
+                <input
+                  type="text"
+                  placeholder="Nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  required
+                />
+              </div>
 
-          <form className="form-cadastro" onSubmit={handleSubmit}>
-            <label>Nome</label>
-            <input
-              type="text"
-              placeholder="Nome"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              required
-            />
+              <div className="form-row">
+                <div className="form-group half-width">
+                  <label>Lote</label>
+                  <input
+                    type="text"
+                    placeholder="Lote"
+                    value={lote}
+                    onChange={(e) => setLote(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group half-width">
+                  <label>Validade</label>
+                  <input
+                    type="date"
+                    value={validade}
+                    onChange={(e) => setValidade(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
 
-            <label>Lote</label>
-            <input
-              type="text"
-              placeholder="Lote"
-              value={lote}
-              onChange={(e) => setLote(e.target.value)}
-              required
-            />
+              <div className="form-group full-width">
+                <label>Fabricante</label>
+                <input
+                  type="text"
+                  placeholder="Fabricante"
+                  value={fabricante}
+                  onChange={(e) => setFabricante(e.target.value)}
+                  required
+                />
+              </div>
 
-            <label>Validade</label>
-            <input
-              type="date"
-              value={validade}
-              onChange={(e) => setValidade(e.target.value)}
-              required
-            />
+              <div className="form-row">
+                <div className="form-group half-width">
+                  <label>Quantidade</label>
+                  <input
+                    type="number"
+                    placeholder="Quantidade"
+                    value={quantidade}
+                    onChange={(e) => setQuantidade(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group half-width">
+                  <label>Unidade</label>
+                  <select
+                    value={unidade}
+                    onChange={(e) => setUnidade(e.target.value)}
+                    required
+                  >
+                    <option value="">Selecione a unidade</option>
+                    <option value="CAIXA">CAIXA</option>
+                    <option value="UNIDADE">UNIDADE</option>
+                    <option value="FRASCO">FRASCO</option>
+                    <option value="AMPOLA">AMPOLA</option>
+                    <option value="TUBO">TUBO</option>
+                    <option value="COMPRIMIDO">COMPRIMIDO</option>
+                    <option value="BISNAGA">BISNAGA</option>
+                    <option value="GARRAFA">GARRAFA</option>
+                    <option value="BLISTER">BLISTER</option>
+                  </select>
+                </div>
+              </div>
 
-            <label>Fabricante</label>
-            <input
-              type="text"
-              placeholder="Fabricante"
-              value={fabricante}
-              onChange={(e) => setFabricante(e.target.value)}
-              required
-            />
-
-            <label>Quantidade</label>
-            <input
-              type="number"
-              placeholder="Quantidade"
-              value={quantidade}
-              onChange={(e) => setQuantidade(e.target.value)}
-              required
-            />
-
-            <label>Unidade</label>
-            <select
-              value={unidade}
-              onChange={(e) => setUnidade(e.target.value)}
-              required
-            >
-              <option value="">Selecione a unidade</option>
-              <option value="CAIXA">CAIXA</option>
-              <option value="UNIDADE">UNIDADE</option>
-              <option value="FRASCO">FRASCO</option>
-              <option value="AMPOLA">AMPOLA</option>
-              <option value="TUBO">TUBO</option>
-              <option value="COMPRIMIDO">COMPRIMIDO</option>
-              <option value="BISNAGA">BISNAGA</option>
-              <option value="GARRAFA">GARRAFA</option>
-              <option value="BLISTER">BLISTER</option>
-            </select>
-            <button type="submit">{id ? "Salvar Alterações" : "Cadastrar"}</button>
-          </form>
+              <button type="submit">
+                {id ? "Salvar Alterações" : "Cadastrar"}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 

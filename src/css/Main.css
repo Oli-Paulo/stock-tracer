@@ -1,9 +1,16 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .main-container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  height: calc(100vh - 64px);
+  width: 100%;
   overflow: hidden;
   position: relative;
+  background: linear-gradient(to bottom right, #f3e8ff, #e0aaff);
 }
 
 /* Botão de menu */
@@ -84,6 +91,8 @@
   padding: 60px 40px;
   transition: margin-left 0.3s ease-in-out;
   width: 100%;
+  overflow-y: auto;
+  max-height: 100vh;
 }
 
 .dashboard.expand {
@@ -111,3 +120,4 @@
   font-size: 24px;
   font-weight: bold;
 }
+

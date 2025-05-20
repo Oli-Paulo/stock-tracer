@@ -2,24 +2,64 @@ body, html, #root {
   height: 100%;
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #fdf0ff, #e0aaff);
+}
+
+/* Aplica o fundo desfocado apenas na tela de login */
+.login-page {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.login-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/public/login.png') no-repeat center center/cover;
+  filter: blur(5px);
+  z-index: -1;
+}
+
+/* Mantém o estilo do container */
+.login-background {
+  height: 100vh;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .login-container {
   height: 100%;
   display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 20%;
+}
+
+.login-box {
+  background-color: rgba(255, 255, 255, 0.69);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  text-align: center;
+
+  display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
-.login-container h1 {
+.login-box h1 {
   font-size: 2.5rem;
   color: #a855f7;
   margin-bottom: 30px;
 }
 
-.login-container input {
+.login-box input {
   width: 300px;
   padding: 12px 15px;
   margin: 10px 0;
@@ -30,11 +70,11 @@ body, html, #root {
   transition: border 0.3s;
 }
 
-.login-container input:focus {
+.login-box input:focus {
   border-color: #a855f7;
 }
 
-.login-container button {
+.login-box button {
   width: 300px;
   padding: 12px;
   margin-top: 15px;
@@ -47,7 +87,7 @@ body, html, #root {
   transition: background-color 0.3s;
 }
 
-.login-container button:hover {
+.login-box button:hover {
   background-color: #9333ea;
 }
 
