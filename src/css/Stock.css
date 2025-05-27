@@ -131,3 +131,76 @@
   font-size: 24px;
   font-weight: bold;
 }
+
+.modal-box.erro {
+  border: 2px solid red;
+  background-color: #ffe5e5;
+  color: #b00000;
+}
+
+.btn-confirmar {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-cancelar {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.search-bar input {
+  width: 50%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.menu-opcoes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.menu-opcoes button {
+  width: 120px;
+  padding: 8px 0;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #eee;
+  transition: background-color 0.2s;
+}
+
+.menu-opcoes button:hover {
+  background-color: #ccc;
+}
+
+.botoes-confirmacao {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 15px;
+}
+
+.botoes-confirmacao button {
+  width: 100px;
+  padding: 8px 0;
+}

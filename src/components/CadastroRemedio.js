@@ -15,11 +15,12 @@ function CadastrarRemedio() {
   const [modalAberto, setModalAberto] = useState(false);
   const [mensagemModal, setMensagemModal] = useState("");
   const [erroCadastro, setErroCadastro] = useState(false);
+  
 
   const navigate = useNavigate();
-  const { id } = useParams(); // usado para edição
+  const { id } = useParams();
 
-  // Buscar dados do remédio se estiver em modo edição
+  // Busca os dados do remédio se estiver em modo edição
   useEffect(() => {
     if (id) {
       fetch(`http://localhost:3001/remedios/${id}`)
@@ -55,7 +56,7 @@ function CadastrarRemedio() {
           lote,
           validade,
           fabricante,
-          quantidade,
+          quantidade: parseInt(quantidade),
           unidade,
         }),
       });
@@ -68,7 +69,8 @@ function CadastrarRemedio() {
         );
         setErroCadastro(false);
       } else {
-        setMensagemModal("Erro ao salvar remédio.");
+        const erro = await response.json();
+        setMensagemModal(erro.message || "Erro ao salvar remédio.");
         setErroCadastro(true);
       }
 
@@ -156,6 +158,7 @@ function CadastrarRemedio() {
                   <label>Quantidade</label>
                   <input
                     type="number"
+                    min="1"
                     placeholder="Quantidade"
                     value={quantidade}
                     onChange={(e) => setQuantidade(e.target.value)}
