@@ -7,6 +7,14 @@ function Stock() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [menuAbertoIndex, setMenuAbertoIndex] = useState(null);
   const [medicamentos, setMedicamentos] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const [modalAberto, setModalAberto] = useState(false);
+  const [mensagemModal, setMensagemModal] = useState("");
+  const [erroModal, setErroModal] = useState(false);
+
+  const [modalConfirmacao, setModalConfirmacao] = useState(false);
+  const [indiceParaExcluir, setIndiceParaExcluir] = useState(null);
 
   const navigate = useNavigate();
 
@@ -31,39 +39,60 @@ function Stock() {
     fetchMedicamentos();
   }, []);
 
+  const medicamentosFiltrados = medicamentos.filter((med) =>
+    med.Nome.toLowerCase().includes(search.toLowerCase())
+  );
+
   const toggleMenu = (index) => {
     setMenuAbertoIndex(menuAbertoIndex === index ? null : index);
   };
 
+  const abrirModal = (mensagem, erro = false) => {
+    setMensagemModal(mensagem);
+    setErroModal(erro);
+    setModalAberto(true);
+  };
+
+  const fecharModal = () => {
+    setModalAberto(false);
+  };
+
   const modificarMedicamento = (index) => {
-    const remedioSelecionado = medicamentos[index];
+    const remedioSelecionado = medicamentosFiltrados[index];
     navigate(`/cadastrar-remedio/${remedioSelecionado.ID_Remedio}`);
     setMenuAbertoIndex(null);
   };
 
-  const excluirMedicamento = (index) => {
-    const medicamento = medicamentos[index];
-    const confirmacao = window.confirm(
-      `Tem certeza que deseja excluir "${medicamento.Nome}"?`
+  const confirmarExclusao = (index) => {
+    const remedioSelecionado = medicamentosFiltrados[index];
+    const indexOriginal = medicamentos.findIndex(
+      (m) => m.ID_Remedio === remedioSelecionado.ID_Remedio
     );
-    if (confirmacao) {
-      fetch(`http://localhost:3001/remedios/${medicamento.ID_Remedio}`, {
-        method: "DELETE",
-      })
-        .then((res) => {
-          if (res.ok) {
-            alert("Medicamento excluído com sucesso!");
-            fetchMedicamentos();
-          } else {
-            alert("Erro ao excluir o medicamento.");
-          }
-        })
-        .catch((err) => {
-          console.error("Erro ao excluir:", err);
-          alert("Erro ao excluir o medicamento.");
-        });
-    }
+    setIndiceParaExcluir(indexOriginal);
+    setModalConfirmacao(true);
     setMenuAbertoIndex(null);
+  };
+
+  const excluirConfirmado = () => {
+    const medicamento = medicamentos[indiceParaExcluir];
+    fetch(`http://localhost:3001/remedios/${medicamento.ID_Remedio}`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (res.ok) {
+          abrirModal("Medicamento excluído com sucesso!");
+          fetchMedicamentos();
+        } else {
+          abrirModal("Erro ao excluir o medicamento.", true);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao excluir:", err);
+        abrirModal("Erro ao excluir o medicamento.", true);
+      });
+
+    setModalConfirmacao(false);
+    setIndiceParaExcluir(null);
   };
 
   return (
@@ -90,6 +119,16 @@ function Stock() {
               +
             </button>
           </div>
+
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Buscar por nome do medicamento..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
           <table className="stock-table">
             <thead>
               <tr>
@@ -103,8 +142,8 @@ function Stock() {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(medicamentos) && medicamentos.length > 0 ? (
-                medicamentos.map((med, index) => (
+              {medicamentosFiltrados.length > 0 ? (
+                medicamentosFiltrados.map((med, index) => (
                   <tr key={index} className="stock-row">
                     <td>{med.Nome}</td>
                     <td>{med.Lote}</td>
@@ -121,12 +160,12 @@ function Stock() {
                       </button>
                       {menuAbertoIndex === index && (
                         <div className="menu-opcoes">
-                          <div onClick={() => modificarMedicamento(index)}>
+                          <button onClick={() => modificarMedicamento(index)}>
                             ✏️ Modificar
-                          </div>
-                          <div onClick={() => excluirMedicamento(index)}>
+                          </button>
+                          <button onClick={() => confirmarExclusao(index)}>
                             🗑️ Excluir
-                          </div>
+                          </button>
                         </div>
                       )}
                     </td>
@@ -141,6 +180,46 @@ function Stock() {
           </table>
         </div>
       </div>
+
+      {modalAberto && (
+        <div className="modal-overlay">
+          <div className={`modal-box ${erroModal ? "erro" : ""}`}>
+            <p>{mensagemModal}</p>
+            <button onClick={fecharModal}>OK</button>
+          </div>
+        </div>
+      )}
+
+      {modalConfirmacao && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <p>
+              Tem certeza que deseja excluir{" "}
+              <strong>
+                {medicamentos[indiceParaExcluir]?.Nome || "este medicamento"}
+              </strong>
+              ?
+            </p>
+            <div className="botoes-confirmacao">
+              <button
+                onClick={excluirConfirmado}
+                className="btn-confirmar"
+              >
+                Sim
+              </button>
+              <button
+                onClick={() => {
+                  setModalConfirmacao(false);
+                  setIndiceParaExcluir(null);
+                }}
+                className="btn-cancelar"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
