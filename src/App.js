@@ -5,6 +5,8 @@ import Main from './components/Main';
 import Stock from './components/Stock';
 import Location from './components/Location';
 import CadastrarRemedio from './components/CadastroRemedio';
+import Usuarios from './components/Usuarios';
+import CadastrarUsuario from './components/CadastroUsuario';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
         <Route path="/location" element={<Location />} />
         <Route path="/cadastrar-remedio" element={<CadastrarRemedio />} />
         <Route path="/cadastrar-remedio/:id" element={<CadastrarRemedio />} />
+        <Route path="/usuarios" element={<Usuarios />} />
+        <Route path="/cadastrar-usuario" element={<CadastrarUsuario />} />
       </Routes>
     </Router>
   );

@@ -161,3 +161,33 @@ app.post("/movimentacoes", (req, res) => {
 app.listen(3001, () => {
   console.log("🚀 Servidor backend rodando na porta 3001");
 });
+
+// Buscar todos os usuários
+app.get("/usuarios", (req, res) => {
+  db.query("SELECT ID_Usuario, Nome, Cargo, Login FROM Usuario", (err, results) => {
+    if (err) {
+      console.error("Erro ao buscar usuários:", err);
+      return res.status(500).json({ error: "Erro ao buscar usuários" });
+    }
+    res.json(results);
+  });
+});
+
+// Cadastrar novo usuário
+app.post("/usuarios", (req, res) => {
+  const { nome, cargo, login, senha } = req.body;
+
+  if (!nome || !cargo || !login || !senha) {
+    return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+  }
+
+  const query = "INSERT INTO Usuario (Nome, Cargo, Login, Senha) VALUES (?, ?, ?, ?)";
+  db.query(query, [nome, cargo, login, senha], (err, result) => {
+    if (err) {
+      console.error("Erro ao cadastrar usuário:", err);
+      return res.status(500).json({ error: "Erro ao cadastrar usuário" });
+    }
+
+    res.status(201).json({ success: true });
+  });
+});
