@@ -1,0 +1,77 @@
+.p-6 {
+  padding: 24px;
+  background-color: #f9f7fd;
+  min-height: 100vh;
+}
+
+h1 {
+  color: #6c2bd9;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.link-cadastrar {
+  background-color: #c77dff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.link-cadastrar:hover {
+  background-color: #a855f7;
+}
+
+.usuarios-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.usuarios-table th,
+.usuarios-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.usuarios-table th {
+  background-color: #f3e8ff;
+  color: #6c2bd9;
+  font-weight: 600;
+}
+
+.usuarios-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.usuarios-table tr:hover {
+  background-color: #f3e8ff;
+}
+
+.botao-circular {
+  width: 40px;
+  height: 40px;
+  background-color: #c77dff;
+  color: white;
+  font-size: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.botao-circular:hover {
+  background-color: #a855f7;
+}
