@@ -41,18 +41,47 @@ app.post("/login", (req, res) => {
   });
 });
 
-// Buscar todos os remédios
+// Buscar todos os remédios com código RFID da etiqueta
 app.get("/remedios", (req, res) => {
-  db.query("SELECT * FROM Remedio", (err, results) => {
+  const query = `
+    SELECT 
+      remedio.ID_Remedio,
+      remedio.Nome,
+      remedio.Lote,
+      remedio.Validade,
+      remedio.Fabricante,
+      remedio.Quantidade,
+      remedio.Unidade,
+      etiqueta_rfid.Codigo_RFID AS RFID
+    FROM remedio
+    LEFT JOIN etiqueta_rfid ON remedio.ID_Etiqueta_RFID = etiqueta_rfid.ID_Etiqueta_RFID
+  `;
+
+  db.query(query, (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(results);
   });
 });
 
-// Buscar um remédio pelo ID
+// Buscar um remédio pelo ID (com RFID)
 app.get("/remedios/:id", (req, res) => {
   const { id } = req.params;
-  db.query("SELECT * FROM Remedio WHERE ID_Remedio = ?", [id], (err, results) => {
+  const query = `
+    SELECT 
+      remedio.ID_Remedio,
+      remedio.Nome,
+      remedio.Lote,
+      remedio.Validade,
+      remedio.Fabricante,
+      remedio.Quantidade,
+      remedio.Unidade,
+      etiqueta_rfid.Codigo_RFID AS RFID
+    FROM remedio
+    LEFT JOIN etiqueta_rfid ON remedio.ID_Etiqueta_RFID = etiqueta_rfid.ID_Etiqueta_RFID
+    WHERE remedio.ID_Remedio = ?
+  `;
+
+  db.query(query, [id], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
     if (results.length === 0) return res.status(404).json({ error: "Remédio não encontrado" });
     res.json(results[0]);
@@ -157,11 +186,6 @@ app.post("/movimentacoes", (req, res) => {
   });
 });
 
-// Inicia servidor
-app.listen(3001, () => {
-  console.log("🚀 Servidor backend rodando na porta 3001");
-});
-
 // Buscar todos os usuários
 app.get("/usuarios", (req, res) => {
   db.query("SELECT ID_Usuario, Nome, Cargo, Login FROM Usuario", (err, results) => {
@@ -190,4 +214,9 @@ app.post("/usuarios", (req, res) => {
 
     res.status(201).json({ success: true });
   });
+});
+
+// Inicia servidor
+app.listen(3001, () => {
+  console.log("🚀 Servidor backend rodando na porta 3001");
 });

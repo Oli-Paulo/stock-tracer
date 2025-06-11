@@ -10,12 +10,12 @@ function CadastrarRemedio() {
   const [fabricante, setFabricante] = useState("");
   const [quantidade, setQuantidade] = useState("");
   const [unidade, setUnidade] = useState("");
+  const [rfid, setRfid] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [modalAberto, setModalAberto] = useState(false);
   const [mensagemModal, setMensagemModal] = useState("");
   const [erroCadastro, setErroCadastro] = useState(false);
-  
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -32,6 +32,7 @@ function CadastrarRemedio() {
           setFabricante(data.Fabricante);
           setQuantidade(data.Quantidade);
           setUnidade(data.Unidade);
+          setRfid(data.Codigo_RFID || "");
         })
         .catch((error) => {
           console.error("Erro ao carregar dados do remédio:", error);
@@ -58,6 +59,7 @@ function CadastrarRemedio() {
           fabricante,
           quantidade: parseInt(quantidade),
           unidade,
+          rfid,
         }),
       });
 
@@ -184,6 +186,18 @@ function CadastrarRemedio() {
                     <option value="BLISTER">BLISTER</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Campo RFID */}
+              <div className="form-group full-width">
+                <label>RFID</label>
+                <input
+                  type="text"
+                  placeholder="Código RFID"
+                  value={rfid}
+                  onChange={(e) => setRfid(e.target.value)}
+                  required
+                />
               </div>
 
               <button type="submit">

@@ -138,6 +138,7 @@ function Stock() {
                 <th>Fabricante</th>
                 <th>Quantidade</th>
                 <th>Unidade</th>
+                <th>RFID</th> {/* Coluna RFID adicionada */}
                 <th>Ações</th>
               </tr>
             </thead>
@@ -151,6 +152,7 @@ function Stock() {
                     <td>{med.Fabricante}</td>
                     <td>{med.Quantidade}</td>
                     <td>{med.Unidade}</td>
+                    <td>{med.RFID || "-"}</td> {/* Mostra RFID ou '-' */}
                     <td>
                       <button
                         className="gear-btn"
@@ -173,7 +175,7 @@ function Stock() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7">Nenhum medicamento encontrado.</td>
+                  <td colSpan="8">Nenhum medicamento encontrado.</td>
                 </tr>
               )}
             </tbody>
@@ -201,10 +203,7 @@ function Stock() {
               ?
             </p>
             <div className="botoes-confirmacao">
-              <button
-                onClick={excluirConfirmado}
-                className="btn-confirmar"
-              >
+              <button onClick={excluirConfirmado} className="btn-confirmar">
                 Sim
               </button>
               <button
