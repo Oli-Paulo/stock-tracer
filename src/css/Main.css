@@ -8,9 +8,8 @@
   display: flex;
   height: calc(100vh - 64px);
   width: 100%;
-  overflow: hidden;
   position: relative;
-  background: linear-gradient(to bottom right, #f3e8ff, #e0aaff);
+  background: linear-gradient(to bottom right, #fff, #f5f5f5);
 }
 
 /* Botão de menu */
@@ -19,7 +18,7 @@
   top: 15px;
   left: 15px;
   z-index: 1000;
-  background-color: #c77dff;
+  background-color: #3066BE;
   color: white;
   font-size: 24px;
   border: none;
@@ -31,15 +30,15 @@
 /* Sidebar retrátil */
 .sidebar {
   height: 100%;
-  background: linear-gradient(180deg, #e0aaff, #c77dff);
-  color: white;
-  padding: 4rem 20px;
+  background: linear-gradient(180deg, #507fca, #5C5C5C);
+  color: #000;
+  padding: 5rem 20px;
   transition: transform 0.3s ease-in-out;
   width: 220px;
   position: fixed;
   top: 4rem;
   left: 0;
-  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.20);
 }
 
 .sidebar.closed {
@@ -48,6 +47,10 @@
 
 .sidebar.open {
   transform: translateX(0);
+}
+
+.sidebar.open ~ .dashboard {
+  margin-left: 240px;
 }
 
 .sidebar h3 {
@@ -63,18 +66,19 @@
 }
 
 .sidebar li {
-  background-color: rgba(240, 248, 255, 0.392);
+  background-color: #e4e4e4;
   border-radius: 5px;
   padding: 10px;
   margin: 20px 0;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+  transition: all 0.2s ease-in-out;
 }
 
 .sidebar li:hover {
-  background-color: #a855f7;
-  color: white;
+  transform: scale(1.06);
+  background-color: #c0c3c7;
+  color: #fff;
 }
 
 .sidebar li button {
@@ -87,11 +91,9 @@
 /* Dashboard */
 .dashboard {
   flex: 1;
-  margin-left: 240px;
   padding: 60px 40px;
   transition: margin-left 0.3s ease-in-out;
   width: 100%;
-  overflow-y: auto;
   max-height: 100vh;
 }
 
@@ -101,11 +103,12 @@
 
 .dashboard h2 {
   margin-bottom: 30px;
-  color: #6c2bd9;
+  color: #3066BE;
 }
 
+/* Header */
 .main-header {
-  background-color: #f3e8ff;
+  background-color: #e4e4e4;
   padding: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
   cursor: pointer;
@@ -114,10 +117,21 @@
   z-index: 1000;
 }
 
-.main-header-title {
-  margin: 0;
-  color: #6c2bd9;
-  font-size: 24px;
-  font-weight: bold;
+/* Gráfico */
+.recharts-line {
+  stroke: #3066BE;
 }
 
+.logo-img-main {
+  height: 50px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.2s;
+  background-color: #0000004e;
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.logo-img-main:hover {
+  transform: scale(1.05);
+}

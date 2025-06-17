@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/Logo-ST.png";
 
 import "../css/Login.css";
 
@@ -42,7 +43,7 @@ function Login() {
       <div className="login-background">
         <div className="login-container">
           <div className="login-box">
-            <h1>Stock Tracer</h1>
+            <img src={logo} alt="Logo Stock Tracer" className="logo-img" />
             {error && <p className="error-message">{error}</p>}
             <input
               type="text"

@@ -5,6 +5,7 @@ import {
 } from 'recharts';
 import '../css/Main.css';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/Logo-ST.png';
 
 // Dados de exemplo do gráfico
 const data = [
@@ -26,7 +27,7 @@ function Main() {
   return (
     <>
       <header className="main-header" onClick={() => navigate('/main')}>
-        <h1 className="main-header-title">Stock Tracer</h1>
+        <img src={logo} alt="Logo Stock Tracer" className="logo-img-main" />
       </header>
 
       <div className="main-container">
@@ -45,7 +46,7 @@ function Main() {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="qtd" stroke="#a855f7" strokeWidth={3} />
+              <Line type="monotone" dataKey="qtd" stroke="#3066BE" strokeWidth={3} />
             </LineChart>
           </ResponsiveContainer>
         </div>
