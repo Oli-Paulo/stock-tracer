@@ -1,51 +1,46 @@
-/* Container principal do formulário */
 .form-container {
   max-width: 600px;
   margin: 60px auto;
   padding: 40px;
-  background-color: #f3e8ff;
+  background-color: #f5f5f5;
   border-radius: 24px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   transition: all 0.3s ease-in-out;
 }
 
-/* Título do formulário */
 .form-container h2 {
   text-align: center;
   margin-bottom: 30px;
-  color: #6c2bd9;
+  color: #3066BE;
   font-size: 26px;
   font-weight: bold;
 }
 
-/* Estilo dos campos de entrada (input) */
 .form-container input,
 .form-container select {
   display: block;
   width: 100%;
   padding: 14px;
   margin-bottom: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #507fca;
   border-radius: 12px;
   font-size: 16px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Foco nos campos de entrada */
 .form-container input:focus,
 .form-container select:focus {
-  border-color: #c77dff;
-  box-shadow: 0 0 6px rgba(199, 125, 255, 0.5);
+  border-color: #3066BE;
+  box-shadow: 0 0 6px rgba(48, 102, 190, 0.5);
   outline: none;
 }
 
-/* Estilo do botão de envio */
 .form-container button {
   width: 100%;
   padding: 14px;
-  background-color: #c77dff;
+  background-color: #3066BE;
   color: white;
   border: none;
   border-radius: 12px;
@@ -55,13 +50,11 @@
   transition: background-color 0.3s ease, transform 0.2s;
 }
 
-/* Efeito de hover no botão */
 .form-container button:hover {
-  background-color: #a855f7;
+  background-color: #507fca;
   transform: scale(1.02);
 }
 
-/* Estilo da classe form-cadastro, responsável pela organização dos campos */
 .form-cadastro {
   display: flex;
   flex-direction: column;
@@ -70,42 +63,37 @@
   margin-top: 24px;
 }
 
-/* Estilo para as caixas de texto dentro do formulário de cadastro */
 .form-cadastro input,
 .form-cadastro select,
 .form-cadastro button {
   padding: 14px;
   font-size: 16px;
   border-radius: 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #507fca;
   transition: all 0.3s ease;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Efeito de foco no formulário de cadastro */
 .form-cadastro input:focus,
 .form-cadastro select:focus {
-  border-color: #c77dff;
-  box-shadow: 0 0 6px rgba(199, 125, 255, 0.5);
+  border-color: #3066BE;
+  box-shadow: 0 0 6px rgba(48, 102, 190, 0.5);
   outline: none;
 }
 
-/* Estilo do botão dentro do formulário de cadastro */
 .form-cadastro button {
-  background-color: #c77dff;
+  background-color: #3066BE;
   color: white;
   border: none;
   font-weight: bold;
   cursor: pointer;
 }
 
-/* Efeito de hover no botão dentro do formulário */
 .form-cadastro button:hover {
-  background-color: #a855f7;
+  background-color: #507fca;
   transform: scale(1.02);
 }
 
-/* Estilo do modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -119,7 +107,6 @@
   z-index: 999;
 }
 
-/* Caixa do modal */
 .modal-box {
   background: white;
   padding: 2rem;
@@ -129,38 +116,35 @@
   max-width: 300px;
 }
 
-/* Botão do modal */
 .modal-box button {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background: #007bff;
+  background: #3066BE;
   border: none;
   border-radius: 6px;
   color: white;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
-/* Estilo dos grupos de campos de formulário */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
+.modal-box button:hover {
+  background: #507fca;
+  transform: scale(1.05);
 }
 
-/* Estilo dos rótulos nos campos de formulário */
 .form-group label {
   margin-bottom: 5px;
   font-weight: bold;
-  color: #6c2bd9;
+  color: #3066BE;
 }
 
 .form-wrapper {
-  background-color: #f3e8ff;
+  background-color: #f5f5f5;
   border-radius: 24px;
   padding: 20px;
   max-width: 600px;
   margin: 30px auto;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease-in-out;
 }
 

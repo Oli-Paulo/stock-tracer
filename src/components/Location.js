@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import "../css/Location.css";
+import logo from "../assets/Logo-ST.png";
 import axios from "axios";
 
 function Location() {
@@ -74,8 +75,8 @@ function Location() {
 
   return (
     <>
-      <header className="main-header" onClick={() => navigate("/main")}>
-        <h1 className="main-header-title">Stock Tracer</h1>
+      <header className="main-header" onClick={() => navigate('/main')}>
+        <img src={logo} alt="Logo Stock Tracer" className="logo-img-main" />
       </header>
 
       <div className="main-container">

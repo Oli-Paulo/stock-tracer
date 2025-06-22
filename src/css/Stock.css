@@ -6,7 +6,7 @@
 }
 
 .add-button {
-  background-color: #c77dff;
+  background-color: #3066BE;
   color: white;
   border: none;
   border-radius: 50%;
@@ -14,22 +14,21 @@
   height: 40px;
   font-size: 24px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .add-button:hover {
-  background-color: #a855f7;
+  background-color: #507fca;
+  transform: scale(1.05);
 }
 
 .stock-table {
   width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  overflow: hidden;
   background-color: white;
   position: relative;
-  overflow: visible;
   z-index: 1;
 }
 
@@ -42,7 +41,8 @@
 }
 
 .stock-table th {
-  color: #6c2bd9;
+  color: #3066BE;
+  background-color: #f5f5f5;
 }
 
 .stock-table tr:last-child td {
@@ -50,17 +50,18 @@
 }
 
 .edit-button {
-  background-color: #6c2bd9;
+  background-color: #3066BE;
   color: white;
   border: none;
   border-radius: 6px;
   padding: 6px 12px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .edit-button:hover {
-  background-color: #5b21b6;
+  background-color: #507fca;
+  transform: scale(1.05);
 }
 
 .stock-row {
@@ -76,14 +77,15 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #6c2bd9;
+  color: #3066BE;
   padding: 4px;
   z-index: 1;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s;
 }
 
 .gear-btn:hover {
   transform: translateY(-50%) scale(1.2);
+  color: #507fca;
 }
 
 .menu-opcoes {
@@ -91,13 +93,18 @@
   top: 50%;
   right: 7%;
   transform: translateY(-50%);
-  background-color: white;
+  background-color: #f5f5f5;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   z-index: 999;
   min-width: 120px;
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5px;
+  padding: 10px;
+  gap: 8px;
 }
 
 .menu-opcoes div {
@@ -105,31 +112,32 @@
   cursor: pointer;
   font-size: 0.9rem;
   white-space: nowrap;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, color 0.2s;
   display: flex;
   align-items: center;
-  gap: 8px;
+  color: #3066BE;
 }
 
 .menu-opcoes div:hover {
-  background-color: #f3e8ff;
+  background-color: #e4e4e4;
+  color: #000;
 }
 
-.main-header {
-  background-color: #f3e8ff;
-  padding: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+.menu-opcoes button {
+  width: 120px;
+  padding: 8px 0;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  background-color: #e4e4e4;
+  transition: background-color 0.2s, color 0.2s;
+  color: #000;
 }
 
-.main-header-title {
-  margin: 0;
-  color: #6c2bd9;
-  font-size: 24px;
-  font-weight: bold;
+.menu-opcoes button:hover {
+  background-color: #c0c3c7;
+  color: #fff;
 }
 
 .modal-box.erro {
@@ -145,6 +153,11 @@
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-confirmar:hover {
+  background-color: #c9302c;
 }
 
 .btn-cancelar {
@@ -154,43 +167,11 @@
   padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
-}
-
-.search-bar {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.search-bar input {
-  width: 50%;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.menu-opcoes {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: 5px;
-}
-
-.menu-opcoes button {
-  width: 120px;
-  padding: 8px 0;
-  font-size: 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background-color: #eee;
   transition: background-color 0.2s;
 }
 
-.menu-opcoes button:hover {
-  background-color: #ccc;
+.btn-cancelar:hover {
+  background-color: #5a6268;
 }
 
 .botoes-confirmacao {

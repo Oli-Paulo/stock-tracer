@@ -7,24 +7,25 @@
 .search-bar input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #cdb4db;
+  border: 1px solid #507fca;
   border-radius: 8px;
   font-size: 1rem;
 }
 
 .search-bar button {
-  background-color: #c77dff;
+  background-color: #3066BE;
   color: white;
   border: none;
   border-radius: 8px;
   padding: 10px 16px;
   font-size: 1.2rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .search-bar button:hover {
-  background-color: #a855f7;
+  background-color: #507fca;
+  transform: scale(1.05);
 }
 
 .resultados {
@@ -34,11 +35,11 @@
 }
 
 .card-localizacao {
-  background-color: #f9f5ff;
+  background-color: #f5f5f5;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  border-left: 6px solid #c77dff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid #3066BE;
 }
 
 .location-table {
@@ -46,8 +47,7 @@
   border-collapse: collapse;
   background-color: white;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
 }
 
@@ -59,14 +59,15 @@
 }
 
 .location-table th {
-  background-color: #f3e8ff;
-  color: #6c2bd9;
+  background-color: #e4e4e4;
+  color: #3066BE;
   font-weight: 600;
 }
 
 .location-table tr:last-child td {
   border-bottom: none;
 }
+
 
 .main-header {
   background-color: #f3e8ff;

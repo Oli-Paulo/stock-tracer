@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./Sidebar";
+import logo from "../assets/Logo-ST.png";
 import "../css/Usuarios.css";
 
 function Usuarios() {
@@ -22,8 +23,8 @@ function Usuarios() {
 
   return (
     <>
-      <header className="main-header" onClick={() => navigate("/main")}>
-        <h1 className="main-header-title">Stock Tracer</h1>
+      <header className="main-header" onClick={() => navigate('/main')}>
+        <img src={logo} alt="Logo Stock Tracer" className="logo-img-main" />
       </header>
 
       <div className="main-container">

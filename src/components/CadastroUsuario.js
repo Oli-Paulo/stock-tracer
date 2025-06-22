@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/Logo-ST.png";
 import "../css/CadastroUsuario.css";
 
 function CadastrarUsuario() {
@@ -57,8 +58,8 @@ function CadastrarUsuario() {
 
   return (
     <>
-      <header className="main-header" onClick={() => navigate("/main")}>
-        <h1 className="main-header-title">Stock Tracer</h1>
+      <header className="main-header" onClick={() => navigate('/main')}>
+        <img src={logo} alt="Logo Stock Tracer" className="logo-img-main" />
       </header>
 
       <div className="main-container">

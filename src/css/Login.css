@@ -4,11 +4,9 @@ body, html, #root {
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* Aplica o fundo desfocado apenas na tela de login */
 .login-page {
   position: relative;
   height: 100vh;
-  overflow: hidden;
 }
 
 .login-page::before {
@@ -42,7 +40,7 @@ body, html, #root {
 }
 
 .login-box {
-  background-color: rgba(255, 255, 255, 0.69);
+  background-color: rgba(255, 255, 255, 0.85);
   padding: 40px;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -55,7 +53,7 @@ body, html, #root {
 
 .login-box h1 {
   font-size: 2.5rem;
-  color: #a855f7;
+  color: #3366CC;
   margin-bottom: 30px;
 }
 
@@ -63,7 +61,7 @@ body, html, #root {
   width: 300px;
   padding: 12px 15px;
   margin: 10px 0;
-  border: 1px solid #ccc;
+  border: 1px solid #999999;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
@@ -71,14 +69,14 @@ body, html, #root {
 }
 
 .login-box input:focus {
-  border-color: #a855f7;
+  border-color: #3366CC;
 }
 
 .login-box button {
   width: 300px;
   padding: 12px;
   margin-top: 15px;
-  background-color: #a855f7;
+  background-color: #999;
   color: white;
   border: none;
   border-radius: 8px;
@@ -88,11 +86,21 @@ body, html, #root {
 }
 
 .login-box button:hover {
-  background-color: #9333ea;
+  background-color: #666;
 }
 
 .error-message {
-  color: #ff4d4f;
+  color: #E63946;
   margin-bottom: 10px;
   font-weight: 500;
+}
+
+.logo-img {
+  max-width: 250px;
+  height: auto;
+  margin-bottom: 30px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }

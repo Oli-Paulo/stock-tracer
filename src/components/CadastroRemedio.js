@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import { useNavigate, useParams } from "react-router-dom";
+import logo from "../assets/Logo-ST.png";
 import "../css/CadastroRemedio.css";
 
 function CadastrarRemedio() {
@@ -141,8 +142,8 @@ function CadastrarRemedio() {
 
   return (
     <>
-      <header className="main-header" onClick={() => navigate("/main")}>
-        <h1 className="main-header-title">Stock Tracer</h1>
+      <header className="main-header" onClick={() => navigate('/main')}>
+        <img src={logo} alt="Logo Stock Tracer" className="logo-img-main" />
       </header>
       <div className="main-container">
         <button
