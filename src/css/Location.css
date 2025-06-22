@@ -84,3 +84,15 @@
   font-size: 24px;
   font-weight: bold;
 }
+
+/* Destaque para a linha da última localização atualizada */
+.highlighted-row {
+  background-color: #e9d7ff; /* lilás suave */
+  border-left: 6px solid #c77dff; /* destaque lilás na lateral */
+  transition: background-color 0.5s ease;
+  font-weight: 600;
+}
+
+.highlighted-row:hover {
+  background-color: #d9b8ff; /* lilás mais forte no hover */
+}

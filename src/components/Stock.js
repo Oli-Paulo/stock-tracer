@@ -5,9 +5,9 @@ import "../css/Stock.css";
 
 function Stock() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [menuAbertoIndex, setMenuAbertoIndex] = useState(null);
   const [medicamentos, setMedicamentos] = useState([]);
   const [search, setSearch] = useState("");
+  const [menuAbertoIndex, setMenuAbertoIndex] = useState(null);
 
   const [modalAberto, setModalAberto] = useState(false);
   const [mensagemModal, setMensagemModal] = useState("");
@@ -18,6 +18,7 @@ function Stock() {
 
   const navigate = useNavigate();
 
+  // Busca remédios do backend
   const fetchMedicamentos = () => {
     fetch("http://localhost:3001/remedios")
       .then((res) => res.json())
@@ -25,13 +26,13 @@ function Stock() {
         if (Array.isArray(data)) {
           setMedicamentos(data);
         } else {
-          console.error("Resposta inesperada da API:", data);
           setMedicamentos([]);
+          console.error("Resposta inesperada da API:", data);
         }
       })
       .catch((err) => {
-        console.error("Erro ao buscar medicamentos:", err);
         setMedicamentos([]);
+        console.error("Erro ao buscar medicamentos:", err);
       });
   };
 
@@ -39,6 +40,56 @@ function Stock() {
     fetchMedicamentos();
   }, []);
 
+  // WebSocket para atualizações em tempo real
+  useEffect(() => {
+    const ws = new WebSocket("ws://localhost:3001");
+
+    ws.onopen = () => {
+      console.log("WebSocket conectado");
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        if (data.tipo === "entradaRegistrada") {
+          // Atualiza quantidade do remédio recebido
+          setMedicamentos((prev) => {
+            const idx = prev.findIndex((m) => m.ID_Remedio === data.remedio.idRemedio);
+            if (idx === -1) return prev;
+
+            const atualizado = [...prev];
+            atualizado[idx] = {
+              ...atualizado[idx],
+              Quantidade: data.remedio.quantidade,
+              ID_Localizacao: data.remedio.idLocalizacao,
+            };
+            return atualizado;
+          });
+        } else if (data.tipo === "redirecionarCadastro") {
+          alert(`Nova etiqueta RFID detectada: ${data.uid}. Cadastre o medicamento.`);
+          // Opcional: redirecionar automaticamente para cadastro
+          // navigate(`/cadastrar-remedio/${data.uid}`);
+        }
+      } catch (error) {
+        console.error("Erro no WebSocket:", error);
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket desconectado");
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket erro:", error);
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [navigate]);
+
+  // Filtra medicamentos pelo nome
   const medicamentosFiltrados = medicamentos.filter((med) =>
     med.Nome.toLowerCase().includes(search.toLowerCase())
   );
@@ -47,34 +98,23 @@ function Stock() {
     setMenuAbertoIndex(menuAbertoIndex === index ? null : index);
   };
 
-  const abrirModal = (mensagem, erro = false) => {
-    setMensagemModal(mensagem);
+  // Modal e exclusão
+  const abrirModal = (msg, erro = false) => {
+    setMensagemModal(msg);
     setErroModal(erro);
     setModalAberto(true);
   };
 
-  const fecharModal = () => {
-    setModalAberto(false);
-  };
-
-  const modificarMedicamento = (index) => {
-    const remedioSelecionado = medicamentosFiltrados[index];
-    navigate(`/cadastrar-remedio/${remedioSelecionado.ID_Remedio}`);
-    setMenuAbertoIndex(null);
-  };
+  const fecharModal = () => setModalAberto(false);
 
   const confirmarExclusao = (index) => {
-    const remedioSelecionado = medicamentosFiltrados[index];
-    const indexOriginal = medicamentos.findIndex(
-      (m) => m.ID_Remedio === remedioSelecionado.ID_Remedio
-    );
-    setIndiceParaExcluir(indexOriginal);
+    setIndiceParaExcluir(index);
     setModalConfirmacao(true);
     setMenuAbertoIndex(null);
   };
 
   const excluirConfirmado = () => {
-    const medicamento = medicamentos[indiceParaExcluir];
+    const medicamento = medicamentosFiltrados[indiceParaExcluir];
     fetch(`http://localhost:3001/remedios/${medicamento.ID_Remedio}`, {
       method: "DELETE",
     })
@@ -83,16 +123,19 @@ function Stock() {
           abrirModal("Medicamento excluído com sucesso!");
           fetchMedicamentos();
         } else {
-          abrirModal("Erro ao excluir o medicamento.", true);
+          abrirModal("Erro ao excluir medicamento.", true);
         }
       })
-      .catch((err) => {
-        console.error("Erro ao excluir:", err);
-        abrirModal("Erro ao excluir o medicamento.", true);
-      });
+      .catch(() => abrirModal("Erro ao excluir medicamento.", true));
 
     setModalConfirmacao(false);
     setIndiceParaExcluir(null);
+  };
+
+  const modificarMedicamento = (index) => {
+    const medicamento = medicamentosFiltrados[index];
+    navigate(`/cadastrar-remedio/${medicamento.ID_Remedio}`);
+    setMenuAbertoIndex(null);
   };
 
   return (
@@ -101,10 +144,7 @@ function Stock() {
         <h1 className="main-header-title">Stock Tracer</h1>
       </header>
       <div className="main-container">
-        <button
-          className="toggle-btn"
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-        >
+        <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
           ☰
         </button>
         <Sidebar isOpen={sidebarOpen} />
@@ -112,10 +152,7 @@ function Stock() {
         <div className={`dashboard ${sidebarOpen ? "shrink" : "expand"}`}>
           <div className="stock-header">
             <h2>Estoque de Medicamentos</h2>
-            <button
-              className="add-button"
-              onClick={() => navigate("/cadastrar-remedio")}
-            >
+            <button className="add-button" onClick={() => navigate("/cadastrar-remedio")}>
               +
             </button>
           </div>
@@ -138,45 +175,38 @@ function Stock() {
                 <th>Fabricante</th>
                 <th>Quantidade</th>
                 <th>Unidade</th>
-                <th>RFID</th> {/* Coluna RFID adicionada */}
+                <th>RFID</th>
+                <th>Localização</th>
                 <th>Ações</th>
               </tr>
             </thead>
             <tbody>
-              {medicamentosFiltrados.length > 0 ? (
+              {medicamentosFiltrados.length === 0 ? (
+                <tr>
+                  <td colSpan="9">Nenhum medicamento encontrado.</td>
+                </tr>
+              ) : (
                 medicamentosFiltrados.map((med, index) => (
-                  <tr key={index} className="stock-row">
+                  <tr key={med.ID_Remedio}>
                     <td>{med.Nome}</td>
                     <td>{med.Lote}</td>
                     <td>{new Date(med.Validade).toLocaleDateString()}</td>
                     <td>{med.Fabricante}</td>
                     <td>{med.Quantidade}</td>
                     <td>{med.Unidade}</td>
-                    <td>{med.RFID || "-"}</td> {/* Mostra RFID ou '-' */}
+                    <td>{med.RFID || "-"}</td>
+                    <td>{med.ID_Localizacao || "-"}</td>
                     <td>
-                      <button
-                        className="gear-btn"
-                        onClick={() => toggleMenu(index)}
-                      >
-                        ⚙️
-                      </button>
+                      <button className="gear-btn" onClick={() => toggleMenu(index)}>⚙️</button>
                       {menuAbertoIndex === index && (
                         <div className="menu-opcoes">
-                          <button onClick={() => modificarMedicamento(index)}>
-                            ✏️ Modificar
-                          </button>
-                          <button onClick={() => confirmarExclusao(index)}>
-                            🗑️ Excluir
-                          </button>
+                          <button onClick={() => modificarMedicamento(index)}>✏️ Modificar</button>
+                          <button onClick={() => confirmarExclusao(index)}>🗑️ Excluir</button>
                         </div>
                       )}
                     </td>
                   </tr>
                 ))
-              ) : (
-                <tr>
-                  <td colSpan="8">Nenhum medicamento encontrado.</td>
-                </tr>
               )}
             </tbody>
           </table>
@@ -197,20 +227,14 @@ function Stock() {
           <div className="modal-box">
             <p>
               Tem certeza que deseja excluir{" "}
-              <strong>
-                {medicamentos[indiceParaExcluir]?.Nome || "este medicamento"}
-              </strong>
-              ?
+              <strong>{medicamentosFiltrados[indiceParaExcluir]?.Nome || "este medicamento"}</strong>?
             </p>
             <div className="botoes-confirmacao">
               <button onClick={excluirConfirmado} className="btn-confirmar">
                 Sim
               </button>
               <button
-                onClick={() => {
-                  setModalConfirmacao(false);
-                  setIndiceParaExcluir(null);
-                }}
+                onClick={() => setModalConfirmacao(false)}
                 className="btn-cancelar"
               >
                 Cancelar

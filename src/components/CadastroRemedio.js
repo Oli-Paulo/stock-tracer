@@ -8,11 +8,13 @@ function CadastrarRemedio() {
   const [lote, setLote] = useState("");
   const [validade, setValidade] = useState("");
   const [fabricante, setFabricante] = useState("");
-  const [quantidade, setQuantidade] = useState("");
+  const [quantidade, setQuantidade] = useState(1);
   const [unidade, setUnidade] = useState("");
   const [rfid, setRfid] = useState("");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [localizacoes, setLocalizacoes] = useState([]);
+  const [idLocalizacao, setIdLocalizacao] = useState("");
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
   const [mensagemModal, setMensagemModal] = useState("");
   const [erroCadastro, setErroCadastro] = useState(false);
@@ -20,28 +22,75 @@ function CadastrarRemedio() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Busca os dados do remédio se estiver em modo edição
+  // Função para identificar se o `id` é numérico
+  const isIdNumerico = (valor) => /^\d+$/.test(valor);
+
+  // Busca localizações para o select
+  useEffect(() => {
+    fetch("http://localhost:3001/localizacoes")
+      .then((res) => res.json())
+      .then(setLocalizacoes)
+      .catch((err) => console.error("Erro ao buscar localizações:", err));
+  }, []);
+
+  // Se não tiver id, escuta WebSocket para redirecionar com UID
+  useEffect(() => {
+    if (!id) {
+      const socket = new WebSocket("ws://localhost:3001");
+
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.tipo === "redirecionarCadastro") {
+          const { uid } = data;
+          console.log("🔁 Redirecionando para cadastro:", uid);
+          navigate(`/cadastrar-remedio/${uid}`);
+        }
+      };
+
+      socket.onerror = (error) => console.error("Erro WebSocket:", error);
+      return () => socket.close();
+    }
+  }, [id, navigate]);
+
+  // Se tiver id, busca remédio (se for numérico) ou apenas seta UID (se for string)
   useEffect(() => {
     if (id) {
-      fetch(`http://localhost:3001/remedios/${id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setNome(data.Nome);
-          setLote(data.Lote);
-          setValidade(data.Validade ? data.Validade.split("T")[0] : "");
-          setFabricante(data.Fabricante);
-          setQuantidade(data.Quantidade);
-          setUnidade(data.Unidade);
-          setRfid(data.Codigo_RFID || "");
-        })
-        .catch((error) => {
-          console.error("Erro ao carregar dados do remédio:", error);
-        });
+      if (isIdNumerico(id)) {
+        // ID numérico: busca dados para edição
+        fetch(`http://localhost:3001/remedios/${id}`)
+          .then((res) => {
+            if (!res.ok) throw new Error("Remédio não encontrado");
+            return res.json();
+          })
+          .then((data) => {
+            setNome(data.Nome || "");
+            setLote(data.Lote || "");
+            setValidade(data.Validade?.split("T")[0] || "");
+            setFabricante(data.Fabricante || "");
+            setQuantidade(data.Quantidade || 1);
+            setUnidade(data.Unidade || "");
+            setRfid(data.RFID || "");
+            setIdLocalizacao(data.ID_Localizacao || "");
+          })
+          .catch((error) => {
+            console.error("Erro ao buscar remédio:", error);
+            setMensagemModal("Remédio não encontrado.");
+            setErroCadastro(true);
+            setModalAberto(true);
+          });
+      } else {
+        // UID: apenas seta RFID para cadastro novo
+        setRfid(id);
+        setQuantidade(1);
+      }
     }
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // No cadastro novo (UID), quantidade sempre inicia em 1
+    const quantidadeEnvio = isIdNumerico(id) ? parseInt(quantidade) : 1;
 
     const metodo = id ? "PUT" : "POST";
     const url = id
@@ -57,9 +106,10 @@ function CadastrarRemedio() {
           lote,
           validade,
           fabricante,
-          quantidade: parseInt(quantidade),
+          quantidade: quantidadeEnvio,
           unidade,
-          rfid,
+          idEtiquetaRFID: rfid,
+          idLocalizacao,
         }),
       });
 
@@ -75,7 +125,6 @@ function CadastrarRemedio() {
         setMensagemModal(erro.message || "Erro ao salvar remédio.");
         setErroCadastro(true);
       }
-
       setModalAberto(true);
     } catch (error) {
       console.error("Erro ao enviar:", error);
@@ -87,9 +136,7 @@ function CadastrarRemedio() {
 
   const fecharModal = () => {
     setModalAberto(false);
-    if (!erroCadastro) {
-      navigate("/Stock");
-    }
+    if (!erroCadastro) navigate("/Stock");
   };
 
   return (
@@ -97,11 +144,11 @@ function CadastrarRemedio() {
       <header className="main-header" onClick={() => navigate("/main")}>
         <h1 className="main-header-title">Stock Tracer</h1>
       </header>
-
       <div className="main-container">
         <button
           className="toggle-btn"
           onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label="Toggle sidebar"
         >
           ☰
         </button>
@@ -115,7 +162,6 @@ function CadastrarRemedio() {
                 <label>Nome</label>
                 <input
                   type="text"
-                  placeholder="Nome"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                   required
@@ -127,7 +173,6 @@ function CadastrarRemedio() {
                   <label>Lote</label>
                   <input
                     type="text"
-                    placeholder="Lote"
                     value={lote}
                     onChange={(e) => setLote(e.target.value)}
                     required
@@ -148,7 +193,6 @@ function CadastrarRemedio() {
                 <label>Fabricante</label>
                 <input
                   type="text"
-                  placeholder="Fabricante"
                   value={fabricante}
                   onChange={(e) => setFabricante(e.target.value)}
                   required
@@ -160,11 +204,9 @@ function CadastrarRemedio() {
                   <label>Quantidade</label>
                   <input
                     type="number"
-                    min="1"
-                    placeholder="Quantidade"
                     value={quantidade}
-                    onChange={(e) => setQuantidade(e.target.value)}
-                    required
+                    readOnly
+                    style={{ backgroundColor: "#eee" }}
                   />
                 </div>
                 <div className="form-group half-width">
@@ -174,7 +216,7 @@ function CadastrarRemedio() {
                     onChange={(e) => setUnidade(e.target.value)}
                     required
                   >
-                    <option value="">Selecione a unidade</option>
+                    <option value="">Selecione</option>
                     <option value="CAIXA">CAIXA</option>
                     <option value="UNIDADE">UNIDADE</option>
                     <option value="FRASCO">FRASCO</option>
@@ -188,14 +230,29 @@ function CadastrarRemedio() {
                 </div>
               </div>
 
-              {/* Campo RFID */}
+              <div className="form-group full-width">
+                <label>Localização</label>
+                <select
+                  value={idLocalizacao}
+                  onChange={(e) => setIdLocalizacao(e.target.value)}
+                  required
+                >
+                  <option value="">Selecione a localização</option>
+                  {localizacoes.map((loc) => (
+                    <option key={loc.ID_Localizacao} value={loc.ID_Localizacao}>
+                      {loc.Nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="form-group full-width">
                 <label>RFID</label>
                 <input
                   type="text"
-                  placeholder="Código RFID"
                   value={rfid}
-                  onChange={(e) => setRfid(e.target.value)}
+                  readOnly
+                  style={{ backgroundColor: "#eee" }}
                   required
                 />
               </div>
