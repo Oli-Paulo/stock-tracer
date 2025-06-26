@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
@@ -145,6 +144,7 @@ app.post("/login", (req, res) => {
 });
 
 // === CRUD Remédios ===
+
 app.get("/remedios", (req, res) => {
   db.query(
     `SELECT r.*, e.Codigo_RFID AS RFID FROM remedio r
@@ -171,17 +171,78 @@ app.get("/remedios/:id", (req, res) => {
 });
 
 app.post("/remedios", async (req, res) => {
-  const { nome, lote, validade, fabricante, quantidade, unidade, idEtiquetaRFID, idLocalizacao } = req.body;
-  try {
-    const [etiquetas] = await db.promise().query("SELECT ID_Etiqueta_RFID FROM etiqueta_rfid WHERE Codigo_RFID = ?", [idEtiquetaRFID]);
-    let idEtiqueta = etiquetas.length ? etiquetas[0].ID_Etiqueta_RFID : (await db.promise().query("INSERT INTO etiqueta_rfid (Codigo_RFID, Status) VALUES (?, 'ativo')", [idEtiquetaRFID]))[0].insertId;
+  const {
+    nome,
+    lote,
+    validade,
+    fabricante,
+    quantidade,
+    unidade,
+    idEtiquetaRFID,
+    idLocalizacao,
+  } = req.body;
 
-    await db.promise().query(
-      `INSERT INTO remedio (Nome, Lote, Validade, Fabricante, Quantidade, Unidade, ID_Etiqueta_RFID, ID_Localizacao)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [nome, lote, validade, fabricante, quantidade, unidade, idEtiqueta, idLocalizacao]
+  const conn = db.promise();
+
+  try {
+    // 1. Verifica ou insere etiqueta
+    const [etiquetas] = await conn.query(
+      "SELECT ID_Etiqueta_RFID FROM etiqueta_rfid WHERE Codigo_RFID = ?",
+      [idEtiquetaRFID]
     );
-    res.status(201).json({ success: true });
+
+    let idEtiqueta;
+    if (etiquetas.length > 0) {
+      idEtiqueta = etiquetas[0].ID_Etiqueta_RFID;
+    } else {
+      const [resEtiqueta] = await conn.query(
+        "INSERT INTO etiqueta_rfid (Codigo_RFID, Status) VALUES (?, 'ATIVO')",
+        [idEtiquetaRFID]
+      );
+      idEtiqueta = resEtiqueta.insertId;
+    }
+
+    // 2. Inserir nova caixa_rfid
+    const [resCaixa] = await conn.query(
+      "INSERT INTO caixa_rfid (Localizacao, Status, Capacidade_Maxima) VALUES (?, ?, ?)",
+      ["Estoque Central", "OCUPADA", 1]
+    );
+    const idCaixa = resCaixa.insertId;
+
+    // 3. Inserir remédio
+    const [resRemedio] = await conn.query(
+      `INSERT INTO remedio
+        (Nome, Lote, Validade, Fabricante, Quantidade, Unidade, ID_Etiqueta_RFID, ID_Localizacao)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        nome,
+        lote,
+        validade,
+        fabricante,
+        quantidade,
+        unidade,
+        idEtiqueta,
+        idLocalizacao,
+      ]
+    );
+    const idRemedio = resRemedio.insertId;
+
+    // 4. Inserir movimentação de entrada
+    await conn.query(
+      `INSERT INTO movimentacao_estoque 
+        (ID_Remedio, ID_Usuario, Tipo, Data_Hora, Quantidade)
+       VALUES (?, ?, ?, NOW(), ?)`,
+      [idRemedio, null, "ENTRADA", quantidade]
+    );
+
+    // 5. Inserir leitura_rfid
+    await conn.query(
+      `INSERT INTO leitura_rfid (Data_Hora, ID_Etiqueta_RFID, ID_Caixa)
+       VALUES (NOW(), ?, ?)`,
+      [idEtiqueta, idCaixa]
+    );
+
+    res.status(201).json({ success: true, message: "Remédio cadastrado com sucesso!" });
   } catch (err) {
     console.error("❌ Erro ao cadastrar remédio:", err);
     res.status(500).json({ error: "Erro ao cadastrar remédio" });
@@ -189,16 +250,45 @@ app.post("/remedios", async (req, res) => {
 });
 
 app.put("/remedios/:id", async (req, res) => {
-  const { nome, lote, validade, fabricante, quantidade, unidade, idEtiquetaRFID, idLocalizacao } = req.body;
+  const {
+    nome,
+    lote,
+    validade,
+    fabricante,
+    quantidade,
+    unidade,
+    idEtiquetaRFID,
+    idLocalizacao,
+  } = req.body;
+
   try {
-    const [etiquetas] = await db.promise().query("SELECT ID_Etiqueta_RFID FROM etiqueta_rfid WHERE Codigo_RFID = ?", [idEtiquetaRFID]);
-    if (etiquetas.length === 0) return res.status(400).json({ error: "Etiqueta RFID não encontrada" });
+    const conn = db.promise();
+
+    // Verifica se etiqueta existe
+    const [etiquetas] = await conn.query(
+      "SELECT ID_Etiqueta_RFID FROM etiqueta_rfid WHERE Codigo_RFID = ?",
+      [idEtiquetaRFID]
+    );
+    if (etiquetas.length === 0)
+      return res.status(400).json({ error: "Etiqueta RFID não encontrada" });
     const idEtiqueta = etiquetas[0].ID_Etiqueta_RFID;
 
-    await db.promise().query(
+    // Atualiza remédio
+    await conn.query(
       `UPDATE remedio SET Nome = ?, Lote = ?, Validade = ?, Fabricante = ?, Quantidade = ?, Unidade = ?, ID_Etiqueta_RFID = ?, ID_Localizacao = ? WHERE ID_Remedio = ?`,
-      [nome, lote, validade, fabricante, quantidade, unidade, idEtiqueta, idLocalizacao, req.params.id]
+      [
+        nome,
+        lote,
+        validade,
+        fabricante,
+        quantidade,
+        unidade,
+        idEtiqueta,
+        idLocalizacao,
+        req.params.id,
+      ]
     );
+
     res.json({ success: true });
   } catch (err) {
     console.error("❌ Erro ao atualizar remédio:", err);
@@ -261,7 +351,8 @@ app.get("/usuarios", (req, res) => {
 
 app.post("/usuarios", (req, res) => {
   const { nome, cargo, login, senha } = req.body;
-  if (!nome || !cargo || !login || !senha) return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+  if (!nome || !cargo || !login || !senha)
+    return res.status(400).json({ error: "Todos os campos são obrigatórios" });
   db.query("INSERT INTO usuario (Nome, Cargo, Login, Senha) VALUES (?, ?, ?, ?)", [nome, cargo, login, senha], (err) => {
     if (err) return res.status(500).json({ error: "Erro ao cadastrar usuário" });
     res.status(201).json({ success: true });
