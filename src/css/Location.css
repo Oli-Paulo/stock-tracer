@@ -68,32 +68,14 @@
   border-bottom: none;
 }
 
-
-.main-header {
-  background-color: #f3e8ff;
-  padding: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.main-header-title {
-  margin: 0;
-  color: #6c2bd9;
-  font-size: 24px;
-  font-weight: bold;
-}
-
 /* Destaque para a linha da última localização atualizada */
 .highlighted-row {
-  background-color: #e9d7ff; /* lilás suave */
-  border-left: 6px solid #c77dff; /* destaque lilás na lateral */
+  background-color: #e9d7ff;
+  border-left: 6px solid #c77dff;
   transition: background-color 0.5s ease;
   font-weight: 600;
 }
 
 .highlighted-row:hover {
-  background-color: #d9b8ff; /* lilás mais forte no hover */
+  background-color: #d9b8ff;
 }

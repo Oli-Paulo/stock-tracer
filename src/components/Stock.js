@@ -153,9 +153,6 @@ function Stock() {
         <div className={`dashboard ${sidebarOpen ? "shrink" : "expand"}`}>
           <div className="stock-header">
             <h2>Estoque de Medicamentos</h2>
-            <button className="add-button" onClick={() => navigate("/cadastrar-remedio")}>
-              +
-            </button>
           </div>
 
           <div className="search-bar">
