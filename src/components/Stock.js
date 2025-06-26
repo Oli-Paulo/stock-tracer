@@ -19,7 +19,7 @@ function Stock() {
 
   const navigate = useNavigate();
 
-  // Busca remédios do backend
+  // === Busca os remédios ===
   const fetchMedicamentos = () => {
     fetch("http://localhost:3001/remedios")
       .then((res) => res.json())
@@ -41,7 +41,7 @@ function Stock() {
     fetchMedicamentos();
   }, []);
 
-  // WebSocket para atualizações em tempo real
+  // === WebSocket: escuta eventos em tempo real ===
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3001");
 
@@ -54,7 +54,6 @@ function Stock() {
         const data = JSON.parse(event.data);
 
         if (data.tipo === "entradaRegistrada") {
-          // Atualiza quantidade do remédio recebido
           setMedicamentos((prev) => {
             const idx = prev.findIndex((m) => m.ID_Remedio === data.remedio.idRemedio);
             if (idx === -1) return prev;
@@ -67,39 +66,35 @@ function Stock() {
             };
             return atualizado;
           });
-        } else if (data.tipo === "redirecionarCadastro") {
-          alert(`Nova etiqueta RFID detectada: ${data.uid}. Cadastre o medicamento.`);
-          // Opcional: redirecionar automaticamente para cadastro
-          // navigate(`/cadastrar-remedio/${data.uid}`);
+        }
+
+        // 🚀 Redirecionamento automático para cadastro com UID novo
+        else if (data.tipo === "redirecionarCadastro") {
+          console.log("RFID detectado, redirecionando:", data.uid);
+          navigate(`/cadastrar-remedio/${data.uid}`);
         }
       } catch (error) {
         console.error("Erro no WebSocket:", error);
       }
     };
 
-    ws.onclose = () => {
-      console.log("WebSocket desconectado");
-    };
+    ws.onclose = () => console.log("WebSocket desconectado");
+    ws.onerror = (error) => console.error("WebSocket erro:", error);
 
-    ws.onerror = (error) => {
-      console.error("WebSocket erro:", error);
-    };
-
-    return () => {
-      ws.close();
-    };
+    return () => ws.close();
   }, [navigate]);
 
-  // Filtra medicamentos pelo nome
+  // === Filtro ===
   const medicamentosFiltrados = medicamentos.filter((med) =>
     med.Nome.toLowerCase().includes(search.toLowerCase())
   );
 
+  // === Controle de menus ===
   const toggleMenu = (index) => {
     setMenuAbertoIndex(menuAbertoIndex === index ? null : index);
   };
 
-  // Modal e exclusão
+  // === Modal de feedback ===
   const abrirModal = (msg, erro = false) => {
     setMensagemModal(msg);
     setErroModal(erro);
@@ -108,6 +103,7 @@ function Stock() {
 
   const fecharModal = () => setModalAberto(false);
 
+  // === Exclusão ===
   const confirmarExclusao = (index) => {
     setIndiceParaExcluir(index);
     setModalConfirmacao(true);
@@ -133,6 +129,7 @@ function Stock() {
     setIndiceParaExcluir(null);
   };
 
+  // === Modificar ===
   const modificarMedicamento = (index) => {
     const medicamento = medicamentosFiltrados[index];
     navigate(`/cadastrar-remedio/${medicamento.ID_Remedio}`);
@@ -141,7 +138,7 @@ function Stock() {
 
   return (
     <>
-      <header className="main-header" onClick={() => navigate('/main')}>
+      <header className="main-header" onClick={() => navigate("/main")}>
         <img src={logo} alt="Logo Stock Tracer" className="logo-img-main" />
       </header>
       <div className="main-container">
@@ -228,15 +225,8 @@ function Stock() {
               <strong>{medicamentosFiltrados[indiceParaExcluir]?.Nome || "este medicamento"}</strong>?
             </p>
             <div className="botoes-confirmacao">
-              <button onClick={excluirConfirmado} className="btn-confirmar">
-                Sim
-              </button>
-              <button
-                onClick={() => setModalConfirmacao(false)}
-                className="btn-cancelar"
-              >
-                Cancelar
-              </button>
+              <button onClick={excluirConfirmado} className="btn-confirmar">Sim</button>
+              <button onClick={() => setModalConfirmacao(false)} className="btn-cancelar">Cancelar</button>
             </div>
           </div>
         </div>
