@@ -23,10 +23,8 @@ function CadastrarRemedio() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // Função para identificar se o `id` é numérico
   const isIdNumerico = (valor) => /^\d+$/.test(valor);
 
-  // Busca localizações para o select
   useEffect(() => {
     fetch("http://localhost:3001/localizacoes")
       .then((res) => res.json())
@@ -34,7 +32,6 @@ function CadastrarRemedio() {
       .catch((err) => console.error("Erro ao buscar localizações:", err));
   }, []);
 
-  // Se não tiver id, escuta WebSocket para redirecionar com UID
   useEffect(() => {
     if (!id) {
       const socket = new WebSocket("ws://localhost:3001");
@@ -53,11 +50,9 @@ function CadastrarRemedio() {
     }
   }, [id, navigate]);
 
-  // Se tiver id, busca remédio (se for numérico) ou apenas seta UID (se for string)
   useEffect(() => {
     if (id) {
       if (isIdNumerico(id)) {
-        // ID numérico: busca dados para edição
         fetch(`http://localhost:3001/remedios/${id}`)
           .then((res) => {
             if (!res.ok) throw new Error("Remédio não encontrado");
@@ -80,7 +75,6 @@ function CadastrarRemedio() {
             setModalAberto(true);
           });
       } else {
-        // UID: apenas seta RFID para cadastro novo
         setRfid(id);
         setQuantidade(1);
       }
@@ -90,11 +84,10 @@ function CadastrarRemedio() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // No cadastro novo (UID), quantidade sempre inicia em 1
     const quantidadeEnvio = isIdNumerico(id) ? parseInt(quantidade) : 1;
 
-    const metodo = id ? "PUT" : "POST";
-    const url = id
+    const metodo = isIdNumerico(id) ? "PUT" : "POST";
+    const url = isIdNumerico(id)
       ? `http://localhost:3001/remedios/${id}`
       : "http://localhost:3001/remedios";
 
@@ -116,7 +109,7 @@ function CadastrarRemedio() {
 
       if (response.ok) {
         setMensagemModal(
-          id
+          isIdNumerico(id)
             ? "Remédio atualizado com sucesso!"
             : "Remédio cadastrado com sucesso!"
         );
@@ -156,7 +149,7 @@ function CadastrarRemedio() {
         <Sidebar isOpen={sidebarOpen} />
 
         <div className={`dashboard ${sidebarOpen ? "shrink" : "expand"}`}>
-          <h2>{id ? "Modificar Remédio" : "Cadastrar Novo Remédio"}</h2>
+          <h2>{isIdNumerico(id) ? "Modificar Remédio" : "Cadastrar Novo Remédio"}</h2>
           <div className="form-wrapper">
             <form className="form-cadastro" onSubmit={handleSubmit}>
               <div className="form-group full-width">
@@ -259,7 +252,7 @@ function CadastrarRemedio() {
               </div>
 
               <button type="submit">
-                {id ? "Salvar Alterações" : "Cadastrar"}
+                {isIdNumerico(id) ? "Salvar Alterações" : "Cadastrar"}
               </button>
             </form>
           </div>
