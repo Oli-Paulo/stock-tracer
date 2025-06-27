@@ -4,17 +4,16 @@
   box-sizing: border-box;
 }
 
-html, body {
+body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden !important;
-  height: 100%;
-  width: 100%;
+  min-height: 100vh;
+  overflow-y: auto;
 }
 
 .main-container {
   display: flex;
-  height: calc(100vh - 64px);
+  min-height: 100vh;
   width: 100%;
   position: relative;
   background: linear-gradient(to bottom right, #fff, #f5f5f5);
@@ -44,7 +43,9 @@ html, body {
   transition: transform 0.3s ease-in-out;
   width: 220px;
   position: fixed;
-  top: 4rem;
+  top: 64px;
+  bottom: 0;
+  height: auto;
   left: 0;
   box-shadow: 4px 0 12px rgba(0, 0, 0, 0.20);
 }
@@ -102,7 +103,8 @@ html, body {
   padding: 60px 40px;
   transition: margin-left 0.3s ease-in-out;
   width: 100%;
-  max-height: 100vh;
+  overflow-y: auto;
+  min-height: 100vh;
 }
 
 .dashboard.expand {
@@ -112,6 +114,27 @@ html, body {
 .dashboard h2 {
   margin-bottom: 30px;
   color: #3066BE;
+}
+
+.dashboard h3 {
+  margin-top: 40px;
+  margin-bottom: 10px;
+  color: #3066BE;
+  font-weight: 600;
+}
+
+/* Box dos gráficos */
+.grafico-box {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.grafico-box h3{
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 /* Header */
@@ -125,11 +148,7 @@ html, body {
   z-index: 1000;
 }
 
-/* Gráfico */
-.recharts-line {
-  stroke: #3066BE;
-}
-
+/* Logo */
 .logo-img-main {
   height: 50px;
   object-fit: contain;

@@ -18,6 +18,7 @@ function Sidebar({ isOpen }) {
         <li onClick={handleNavigateToStock}>📦 Estoque</li>
         <li onClick={() => navigate('/location')}>📍 Localização</li>
         <li onClick={() => navigate('/usuarios')}>👥 Usuários</li>
+        <li onClick={() => navigate("/cadastrar-saida")}>🚚 Registrar Saída</li>
         <li onClick={handleLogout}>🚪 Sair</li>
       </ul>
     </div>

@@ -7,6 +7,7 @@ import Location from './components/Location';
 import CadastrarRemedio from './components/CadastroRemedio';
 import Usuarios from './components/Usuarios';
 import CadastrarUsuario from './components/CadastroUsuario';
+import CadastrarSaida from "./components/CadastrarSaida";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/usuarios" element={<Usuarios />} />
         <Route path="/cadastrar-usuario" element={<CadastrarUsuario />} />
         <Route path="/cadastrar-usuario/:id" element={<CadastrarUsuario />} />
+        <Route path="/cadastrar-saida" element={<CadastrarSaida />} />
       </Routes>
     </Router>
   );

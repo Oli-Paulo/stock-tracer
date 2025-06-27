@@ -1,0 +1,13 @@
+.erro {
+  color: #b00000;
+  background: #ffe5e5;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.sucesso {
+  color: #2e7d32;
+  background: #e8f5e9;
+  padding: 10px;
+  border-radius: 6px;
+}

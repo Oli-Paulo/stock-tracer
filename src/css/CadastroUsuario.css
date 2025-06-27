@@ -5,6 +5,7 @@
   background-color: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   border-radius: 12px;
+  min-height: 100vh;
 }
 
 .formulario-container h2 {

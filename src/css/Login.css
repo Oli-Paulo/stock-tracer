@@ -1,12 +1,13 @@
 body, html, #root {
-  height: 100%;
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
 }
 
 .login-page {
-  position: relative;
-  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .login-page::before {
