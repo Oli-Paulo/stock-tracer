@@ -45,27 +45,33 @@
 .location-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
+  background-color: white;
+  position: relative;
+  z-index: 1;
 }
 
 .location-table th,
 .location-table td {
-  padding: 14px;
+  border: none;
   border-bottom: 1px solid #ddd;
+  padding: 12px;
   text-align: center;
 }
 
 .location-table th {
-  background-color: #e4e4e4;
   color: #3066BE;
-  font-weight: 600;
+  background-color: #f5f5f5;
 }
 
 .location-table tr:last-child td {
   border-bottom: none;
+}
+
+.location-table tr:hover td {
+  background-color: #f0f8ff; /* azul clarinho */
+  transition: background-color 0.3s ease;
 }
 
 /* Destaque para a linha da última localização atualizada */

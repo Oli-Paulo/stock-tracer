@@ -363,3 +363,42 @@ app.post("/usuarios", (req, res) => {
 server.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
 });
+
+// Buscar usuário por ID
+app.get("/usuarios/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const [resultado] = await db.promise().query("SELECT * FROM usuario WHERE ID_Usuario = ?", [id]);
+
+    if (resultado.length === 0) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+
+    res.json(resultado[0]);
+  } catch (error) {
+    console.error("Erro ao buscar usuário:", error);
+    res.status(500).json({ message: "Erro ao buscar usuário." });
+  }
+});
+
+// Excluir usuário por ID
+app.delete("/usuarios/:id", (req, res) => {
+  const { id } = req.params;
+  console.log("Recebido DELETE para ID:", id);
+
+  db.query("DELETE FROM usuario WHERE ID_Usuario = ?", [id], (err, result) => {
+    if (err) {
+      console.error("Erro ao excluir usuário:", err);
+      return res.status(500).json({ error: "Erro ao excluir usuário." });
+    }
+
+    console.log("Resultado da exclusão:", result);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    res.json({ success: true, message: "Usuário excluído com sucesso." });
+  });
+});

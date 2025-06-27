@@ -20,6 +20,7 @@ function App() {
         <Route path="/cadastrar-remedio/:id" element={<CadastrarRemedio />} />
         <Route path="/usuarios" element={<Usuarios />} />
         <Route path="/cadastrar-usuario" element={<CadastrarUsuario />} />
+        <Route path="/cadastrar-usuario/:id" element={<CadastrarUsuario />} />
       </Routes>
     </Router>
   );

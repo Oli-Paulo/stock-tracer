@@ -29,31 +29,35 @@ h1 {
 .usuarios-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 1;
+  margin-top: 20px;
 }
 
 .usuarios-table th,
 .usuarios-table td {
-  border: 1px solid #ddd;
+  border: none;
+  border-bottom: 1px solid #ddd;
   padding: 12px;
   text-align: center;
 }
 
 .usuarios-table th {
-  background-color: #e4e4e4;
   color: #3066BE;
+  background-color: #f5f5f5;
   font-weight: 600;
 }
 
-.usuarios-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+.usuarios-table tr:last-child td {
+  border-bottom: none;
 }
 
-.usuarios-table tr:hover {
-  background-color: #e4e4e4;
+.usuarios-table tr:hover td {
+  background-color: #f0f8ff;
+  transition: background-color 0.3s ease;
 }
 
 .botao-circular {

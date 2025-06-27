@@ -84,6 +84,21 @@ function Stock() {
     return () => ws.close();
   }, [navigate]);
 
+  useEffect(() => {
+  const handleClickFora = (e) => {
+    const menu = document.querySelector(".menu-opcoes");
+    const engrenagem = document.querySelector(".gear-btn");
+
+    // Fecha se clicar fora do menu e da engrenagem
+    if (menu && !menu.contains(e.target) && !engrenagem.contains(e.target)) {
+      setMenuAbertoIndex(null);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickFora);
+  return () => document.removeEventListener("mousedown", handleClickFora);
+}, []);
+
   // === Filtro ===
   const medicamentosFiltrados = medicamentos.filter((med) =>
     med.Nome.toLowerCase().includes(search.toLowerCase())
