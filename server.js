@@ -13,7 +13,7 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
-// === Conexão com o banco de dados ===
+// Conexão banco de dados
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -26,7 +26,7 @@ db.connect((err) => {
   else console.log("✅ Conectado ao banco de dados stock_tracer");
 });
 
-// === WebSocket + HTTP Server ===
+// WebSocket + HTTP Server
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 let clients = [];
@@ -48,7 +48,7 @@ function broadcast(data) {
   });
 }
 
-// === Leitura Serial com verificação de duplicidade ===
+// Leitura serial com verificação duplicidade
 function iniciarLeituraSerial() {
   const port = new SerialPort.SerialPort({ path: "COM4", baudRate: 115200, autoOpen: false });
 
@@ -118,7 +118,7 @@ function iniciarLeituraSerial() {
           if (locs.length > 0) nomeLocalizacao = locs[0].Nome;
         }
 
-        broadcast({ tipo: "entradaRegistrada", remedio: { ...remedio, quantidade: novaQuantidade }, localizacao: nomeLocalizacao });
+        broadcast({ tipo: "entradaRegistrada", remedio: { ...remedio, Quantidade: novaQuantidade }, localizacao: nomeLocalizacao });
       } catch (err) {
         console.error("❌ Erro ao processar UID:", err);
       }
@@ -130,7 +130,7 @@ function iniciarLeituraSerial() {
 
 iniciarLeituraSerial();
 
-// === ROTAS ===
+// ROTAS
 
 // Login
 app.post("/login", (req, res) => {
@@ -143,7 +143,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-// === CRUD Remédios ===
+// CRUD Remédios
 
 app.get("/remedios", (req, res) => {
   db.query(
@@ -172,20 +172,13 @@ app.get("/remedios/:id", (req, res) => {
 
 app.post("/remedios", async (req, res) => {
   const {
-    nome,
-    lote,
-    validade,
-    fabricante,
-    quantidade,
-    unidade,
-    idEtiquetaRFID,
-    idLocalizacao,
+    nome, lote, validade, fabricante,
+    quantidade, unidade, idEtiquetaRFID, idLocalizacao,
   } = req.body;
 
   const conn = db.promise();
 
   try {
-    // 1. Verifica ou insere etiqueta
     const [etiquetas] = await conn.query(
       "SELECT ID_Etiqueta_RFID FROM etiqueta_rfid WHERE Codigo_RFID = ?",
       [idEtiquetaRFID]
@@ -202,32 +195,23 @@ app.post("/remedios", async (req, res) => {
       idEtiqueta = resEtiqueta.insertId;
     }
 
-    // 2. Inserir nova caixa_rfid
     const [resCaixa] = await conn.query(
       "INSERT INTO caixa_rfid (Localizacao, Status, Capacidade_Maxima) VALUES (?, ?, ?)",
       ["Estoque Central", "OCUPADA", 1]
     );
     const idCaixa = resCaixa.insertId;
 
-    // 3. Inserir remédio
     const [resRemedio] = await conn.query(
       `INSERT INTO remedio
         (Nome, Lote, Validade, Fabricante, Quantidade, Unidade, ID_Etiqueta_RFID, ID_Localizacao)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        nome,
-        lote,
-        validade,
-        fabricante,
-        quantidade,
-        unidade,
-        idEtiqueta,
-        idLocalizacao,
+        nome, lote, validade, fabricante,
+        quantidade, unidade, idEtiqueta, idLocalizacao,
       ]
     );
     const idRemedio = resRemedio.insertId;
 
-    // 4. Inserir movimentação de entrada
     await conn.query(
       `INSERT INTO movimentacao_estoque 
         (ID_Remedio, ID_Usuario, Tipo, Data_Hora, Quantidade)
@@ -235,7 +219,6 @@ app.post("/remedios", async (req, res) => {
       [idRemedio, null, "ENTRADA", quantidade]
     );
 
-    // 5. Inserir leitura_rfid
     await conn.query(
       `INSERT INTO leitura_rfid (Data_Hora, ID_Etiqueta_RFID, ID_Caixa)
        VALUES (NOW(), ?, ?)`,
@@ -251,20 +234,13 @@ app.post("/remedios", async (req, res) => {
 
 app.put("/remedios/:id", async (req, res) => {
   const {
-    nome,
-    lote,
-    validade,
-    fabricante,
-    quantidade,
-    unidade,
-    idEtiquetaRFID,
-    idLocalizacao,
+    nome, lote, validade, fabricante,
+    quantidade, unidade, idEtiquetaRFID, idLocalizacao,
   } = req.body;
 
   try {
     const conn = db.promise();
 
-    // Verifica se etiqueta existe
     const [etiquetas] = await conn.query(
       "SELECT ID_Etiqueta_RFID FROM etiqueta_rfid WHERE Codigo_RFID = ?",
       [idEtiquetaRFID]
@@ -273,19 +249,11 @@ app.put("/remedios/:id", async (req, res) => {
       return res.status(400).json({ error: "Etiqueta RFID não encontrada" });
     const idEtiqueta = etiquetas[0].ID_Etiqueta_RFID;
 
-    // Atualiza remédio
     await conn.query(
       `UPDATE remedio SET Nome = ?, Lote = ?, Validade = ?, Fabricante = ?, Quantidade = ?, Unidade = ?, ID_Etiqueta_RFID = ?, ID_Localizacao = ? WHERE ID_Remedio = ?`,
       [
-        nome,
-        lote,
-        validade,
-        fabricante,
-        quantidade,
-        unidade,
-        idEtiqueta,
-        idLocalizacao,
-        req.params.id,
+        nome, lote, validade, fabricante,
+        quantidade, unidade, idEtiqueta, idLocalizacao, req.params.id,
       ]
     );
 
@@ -296,15 +264,90 @@ app.put("/remedios/:id", async (req, res) => {
   }
 });
 
-app.delete("/remedios/:id", (req, res) => {
-  db.query("DELETE FROM remedio WHERE ID_Remedio = ?", [req.params.id], (err, result) => {
-    if (err) return res.status(500).json({ error: "Erro ao excluir" });
-    if (result.affectedRows === 0) return res.status(404).json({ error: "Não encontrado" });
-    res.json({ success: true });
-  });
+app.delete("/remedios/:id", async (req, res) => {
+  const idRemedio = req.params.id;
+
+  try {
+    const conn = db.promise();
+
+    // Pega o ID_Etiqueta_RFID do remédio
+    const [remedioRows] = await conn.query(
+      "SELECT ID_Etiqueta_RFID FROM remedio WHERE ID_Remedio = ?",
+      [idRemedio]
+    );
+
+    if (remedioRows.length === 0) {
+      return res.status(404).json({ error: "Remédio não encontrado." });
+    }
+
+    const idEtiqueta = remedioRows[0].ID_Etiqueta_RFID;
+
+    // Excluir movimentações de estoque
+    await conn.query("DELETE FROM movimentacao_estoque WHERE ID_Remedio = ?", [idRemedio]);
+
+    // Excluir leituras RFID da etiqueta
+    if (idEtiqueta !== null) {
+      await conn.query("DELETE FROM leitura_rfid WHERE ID_Etiqueta_RFID = ?", [idEtiqueta]);
+    }
+
+    // Excluir o remédio
+    await conn.query("DELETE FROM remedio WHERE ID_Remedio = ?", [idRemedio]);
+
+    // Apagar etiqueta RFID se não vinculada a outro remédio
+    if (idEtiqueta !== null) {
+      const [outros] = await conn.query(
+        "SELECT 1 FROM remedio WHERE ID_Etiqueta_RFID = ? LIMIT 1",
+        [idEtiqueta]
+      );
+      if (outros.length === 0) {
+        await conn.query("DELETE FROM etiqueta_rfid WHERE ID_Etiqueta_RFID = ?", [idEtiqueta]);
+      }
+    }
+
+    res.json({ success: true, message: "Remédio e dados relacionados excluídos com sucesso." });
+  } catch (error) {
+    console.error("Erro ao excluir remédio:", error);
+    res.status(500).json({ error: "Erro ao excluir remédio." });
+  }
 });
 
-// === Outras tabelas ===
+// Rota para registrar saída de medicamento
+app.post("/saidas", async (req, res) => {
+  const { ID_Remedio, Quantidade } = req.body;
+
+  if (!ID_Remedio || !Quantidade)
+    return res.status(400).json({ error: "ID_Remedio e Quantidade são obrigatórios" });
+
+  try {
+    const conn = db.promise();
+
+    const [remedios] = await conn.query("SELECT Quantidade FROM remedio WHERE ID_Remedio = ?", [ID_Remedio]);
+    if (remedios.length === 0)
+      return res.status(404).json({ error: "Remédio não encontrado" });
+
+    const estoqueAtual = remedios[0].Quantidade;
+    const novaQuantidade = estoqueAtual - Quantidade;
+
+    if (novaQuantidade < 0)
+      return res.status(400).json({ error: "Quantidade insuficiente no estoque" });
+
+    await conn.query("UPDATE remedio SET Quantidade = ? WHERE ID_Remedio = ?", [novaQuantidade, ID_Remedio]);
+
+    await conn.query(
+      `INSERT INTO movimentacao_estoque (ID_Remedio, ID_Usuario, Tipo, Data_Hora, Quantidade)
+       VALUES (?, ?, 'SAIDA', NOW(), ?)`,
+      [ID_Remedio, 1, Quantidade] // Substitua 1 pelo ID do usuário real, se possível
+    );
+
+    res.json({ success: true, message: "Saída registrada com sucesso" });
+  } catch (err) {
+    console.error("Erro ao registrar saída:", err);
+    res.status(500).json({ error: "Erro ao registrar saída" });
+  }
+});
+
+// Outras tabelas
+
 app.get("/localizacoes", (req, res) => {
   db.query("SELECT * FROM localizacao", (err, results) => {
     if (err) return res.status(500).json({ error: "Erro ao buscar localizações" });
@@ -342,11 +385,27 @@ app.post("/movimentacoes", (req, res) => {
   });
 });
 
+// Usuários
+
 app.get("/usuarios", (req, res) => {
   db.query("SELECT ID_Usuario, Nome, Cargo, Login FROM usuario", (err, results) => {
     if (err) return res.status(500).json({ error: "Erro ao buscar usuários" });
     res.json(results);
   });
+});
+
+app.get("/usuarios/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const [resultado] = await db.promise().query("SELECT * FROM usuario WHERE ID_Usuario = ?", [id]);
+    if (resultado.length === 0) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+    res.json(resultado[0]);
+  } catch (error) {
+    console.error("Erro ao buscar usuário:", error);
+    res.status(500).json({ message: "Erro ao buscar usuário." });
+  }
 });
 
 app.post("/usuarios", (req, res) => {
@@ -359,46 +418,77 @@ app.post("/usuarios", (req, res) => {
   });
 });
 
-// Iniciar servidor
-server.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
-});
-
-// Buscar usuário por ID
-app.get("/usuarios/:id", async (req, res) => {
-  const id = req.params.id;
+app.delete("/usuarios/:id", async (req, res) => {
+  const { id } = req.params;
 
   try {
-    const [resultado] = await db.promise().query("SELECT * FROM usuario WHERE ID_Usuario = ?", [id]);
+    const [movimentacoes] = await db.promise().query(
+      "SELECT COUNT(*) AS total FROM movimentacao_estoque WHERE ID_Usuario = ?",
+      [id]
+    );
 
-    if (resultado.length === 0) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
+    if (movimentacoes[0].total > 0) {
+      return res.status(400).json({
+        error: "Não é possível excluir este usuário, pois ele possui movimentações registradas.",
+      });
     }
 
-    res.json(resultado[0]);
-  } catch (error) {
-    console.error("Erro ao buscar usuário:", error);
-    res.status(500).json({ message: "Erro ao buscar usuário." });
-  }
-});
+    const [resultado] = await db.promise().query(
+      "DELETE FROM usuario WHERE ID_Usuario = ?",
+      [id]
+    );
 
-// Excluir usuário por ID
-app.delete("/usuarios/:id", (req, res) => {
-  const { id } = req.params;
-  console.log("Recebido DELETE para ID:", id);
-
-  db.query("DELETE FROM usuario WHERE ID_Usuario = ?", [id], (err, result) => {
-    if (err) {
-      console.error("Erro ao excluir usuário:", err);
-      return res.status(500).json({ error: "Erro ao excluir usuário." });
-    }
-
-    console.log("Resultado da exclusão:", result);
-
-    if (result.affectedRows === 0) {
+    if (resultado.affectedRows === 0) {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
     res.json({ success: true, message: "Usuário excluído com sucesso." });
+  } catch (err) {
+    console.error("❌ Erro ao excluir usuário:", err);
+    res.status(500).json({ error: "Erro ao excluir usuário." });
+  }
+});
+
+// Rota nova: resumo semanal de movimentações (entrada/saída)
+app.get("/movimentacoes/resumo-semanal", (req, res) => {
+  const sql = `
+    SELECT
+      DAYNAME(Data_Hora) AS dia,
+      SUM(CASE WHEN UPPER(Tipo) = 'ENTRADA' THEN Quantidade ELSE 0 END) AS total_entrada,
+      SUM(CASE WHEN UPPER(Tipo) = 'SAIDA' THEN Quantidade ELSE 0 END) AS total_saida
+    FROM movimentacao_estoque
+    WHERE Data_Hora >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    GROUP BY DAYNAME(Data_Hora)
+    ORDER BY FIELD(DAYNAME(Data_Hora), 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Erro ao buscar resumo semanal:", err);
+      return res.status(500).json({ error: "Erro ao buscar dados" });
+    }
+
+    const nomesDias = {
+      Monday: "Segunda",
+      Tuesday: "Terça",
+      Wednesday: "Quarta",
+      Thursday: "Quinta",
+      Friday: "Sexta",
+      Saturday: "Sábado",
+      Sunday: "Domingo",
+    };
+
+    const dadosFormatados = results.map(row => ({
+      dia: nomesDias[row.dia] || row.dia,
+      entrada: row.total_entrada || 0,
+      saida: row.total_saida || 0,
+    }));
+
+    res.json(dadosFormatados);
   });
+});
+
+// Iniciar servidor
+server.listen(PORT, () => {
+  console.log(`🚀 Servidor rodando em: http://localhost:${PORT}`);
 });

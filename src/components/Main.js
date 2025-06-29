@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import {
   LineChart,
@@ -13,26 +13,36 @@ import "../css/Main.css";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Logo-ST.png";
 
-// Dados de exemplo do gráfico
-const dadosEntrada = [
-  { dia: "Segunda", Quantidade: 20 },
-  { dia: "Terça", Quantidade: 35 },
-  { dia: "Quarta", Quantidade: 25 },
-  { dia: "Quinta", Quantidade: 40 },
-  { dia: "Sexta", Quantidade: 30 },
-];
-
-const dadosSaida = [
-  { dia: "Segunda", Quantidade: 10 },
-  { dia: "Terça", Quantidade: 15 },
-  { dia: "Quarta", Quantidade: 20 },
-  { dia: "Quinta", Quantidade: 35 },
-  { dia: "Sexta", Quantidade: 28 },
-];
-
 function Main() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [dadosEntrada, setDadosEntrada] = useState([]);
+  const [dadosSaida, setDadosSaida] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch("http://localhost:3001/movimentacoes/resumo-semanal")
+      .then((res) => res.json())
+      .then((data) => {
+        // data já vem com { dia, entrada, saida }
+        // Para os gráficos, separar em dois arrays:
+        const entradas = data.map((item) => ({
+          dia: item.dia,
+          Quantidade: item.entrada,
+        }));
+        const saidas = data.map((item) => ({
+          dia: item.dia,
+          Quantidade: item.saida,
+        }));
+
+        setDadosEntrada(entradas);
+        setDadosSaida(saidas);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar dados:", err);
+        setDadosEntrada([]);
+        setDadosSaida([]);
+      });
+  }, []);
 
   const handleLogout = () => {
     navigate("/");
