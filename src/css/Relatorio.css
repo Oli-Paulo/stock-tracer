@@ -1,0 +1,105 @@
+.relatorio-container {
+  max-width: 900px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  padding: 0 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding-bottom: 20px;
+}
+
+.relatorio-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #3066BE;
+}
+
+.filtro-tipo {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.filtro-tipo select {
+  padding: 6px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.filtro-tipo select:hover {
+  border-color: #3066BE;
+}
+
+.relatorio-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  background-color: white;
+  overflow: hidden;
+}
+
+.relatorio-table th,
+.relatorio-table td {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.relatorio-table th {
+  color: #3066BE;
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.relatorio-table tr:last-child td {
+  border-bottom: none;
+}
+
+.relatorio-table tr:hover td {
+  background-color: #f0f8ff;
+  transition: background-color 0.3s ease;
+}
+
+.relatorio-table td.entrada {
+  color: green;
+  font-weight: bold;
+}
+
+.relatorio-table td.saida {
+  color: red;
+  font-weight: bold;
+}
+
+.paginacao {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  align-items: center;
+}
+
+.paginacao button {
+  background-color: #3066BE;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.paginacao button:hover:not(:disabled) {
+  background-color: #507fca;
+  transform: scale(1.05);
+}
+
+.paginacao button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

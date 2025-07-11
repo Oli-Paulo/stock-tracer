@@ -487,6 +487,28 @@ app.get("/movimentacoes/resumo-semanal", (req, res) => {
     res.json(dadosFormatados);
   });
 });
+// Rota nova: movimentações completas detalhadas
+app.get("/movimentacoes-completas", async (req, res) => {
+  try {
+    const [resultados] = await db.promise().query(`
+      SELECT
+        me.ID_Movimentacao,
+        me.Tipo,
+        me.Data_Hora,
+        me.Quantidade,
+        r.Nome AS NomeRemedio,
+        u.Nome AS NomeUsuario
+      FROM movimentacao_estoque me
+      LEFT JOIN remedio r ON me.ID_Remedio = r.ID_Remedio
+      LEFT JOIN usuario u ON me.ID_Usuario = u.ID_Usuario
+      ORDER BY me.Data_Hora DESC
+    `);
+    res.json(resultados);
+  } catch (err) {
+    console.error("❌ Erro ao buscar movimentações completas:", err);
+    res.status(500).json({ error: "Erro ao buscar movimentações completas" });
+  }
+});
 
 // Iniciar servidor
 server.listen(PORT, () => {

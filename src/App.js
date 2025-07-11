@@ -8,6 +8,7 @@ import CadastrarRemedio from './components/CadastroRemedio';
 import Usuarios from './components/Usuarios';
 import CadastrarUsuario from './components/CadastroUsuario';
 import CadastrarSaida from "./components/CadastrarSaida";
+import Relatorio from './components/Relatorio';
 
 function App() {
   return (
@@ -23,9 +24,13 @@ function App() {
         <Route path="/cadastrar-usuario" element={<CadastrarUsuario />} />
         <Route path="/cadastrar-usuario/:id" element={<CadastrarUsuario />} />
         <Route path="/cadastrar-saida" element={<CadastrarSaida />} />
+
+        {/* Rota para relatório */}
+        <Route path="/relatorio" element={<Relatorio />} />
       </Routes>
     </Router>
   );
 }
+
 
 export default App;
